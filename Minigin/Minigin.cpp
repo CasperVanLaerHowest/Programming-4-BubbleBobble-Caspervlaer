@@ -103,5 +103,5 @@ void dae::Minigin::RunOneFrame()
 	m_quit = !InputManager::GetInstance().ProcessInput();
 	SceneManager::GetInstance().Update();
 	Renderer::GetInstance().Render();
-	//help me
+	//help me fix
 }
