@@ -107,7 +107,7 @@ void dae::Minigin::Run(const std::function<void()>& load)
 		lastTime = frameStartTime;
 
 		RunOneFrame();
-
+		CalculateFPS(fpsTimer, frameCount);
 
 		const auto frameEndTime{ std::chrono::high_resolution_clock::now() };
 		const auto frameDuration{ frameEndTime - frameStartTime };
@@ -124,6 +124,14 @@ void dae::Minigin::Run(const std::function<void()>& load)
 void dae::Minigin::RunOneFrame()
 {
 	m_quit = !InputManager::GetInstance().ProcessInput();
+
+	m_frameLag += m_deltaTime;
+	while (m_frameLag >= m_fixedTimeStep)
+	{
+		SceneManager::GetInstance().FixedUpdate(m_fixedTimeStep);
+		m_frameLag -= m_fixedTimeStep;
+	}
+
 	SceneManager::GetInstance().Update(m_deltaTime);
 	Renderer::GetInstance().Render();
 }
@@ -136,6 +144,7 @@ void dae::Minigin::CalculateFPS(float& fpsTimer, int& frameCount)
 
 	if (fpsTimer >= 1.f)
 	{
+		m_CurrentFPS = static_cast<float>(frameCount) / fpsTimer;
 		//std::cout << "FPS: " << frameCount << "\n";
 		frameCount = 0;
 		fpsTimer = 0.f;

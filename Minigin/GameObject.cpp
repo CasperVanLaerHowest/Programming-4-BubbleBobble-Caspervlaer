@@ -5,7 +5,9 @@
 
 dae::GameObject::~GameObject() = default;
 
-void dae::GameObject::Update(float deltaTime){}
+void dae::GameObject::FixedUpdate([[maybe_unused]] float fixedTimeStap) {}
+
+void dae::GameObject::Update([[maybe_unused]] float deltaTime){}
 
 void dae::GameObject::Render() const
 {

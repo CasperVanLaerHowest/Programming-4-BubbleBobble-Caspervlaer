@@ -22,6 +22,9 @@ namespace dae
 	private:
 		void CalculateFPS(float& fpsTimer, int& frameCount);
 
-		float m_deltaTime{};
+		float m_deltaTime{ 0 };
+		float m_CurrentFPS{ 0 };
+		float m_frameLag{ 0 };
+		const float m_fixedTimeStep{ 0.02f};
 	};
 }
