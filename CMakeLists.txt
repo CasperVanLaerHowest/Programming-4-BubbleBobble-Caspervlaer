@@ -24,10 +24,10 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   Minigin/ResourceManager.cpp
   Minigin/Scene.cpp
   Minigin/SceneManager.cpp
-  Minigin/TextObject.cpp
   Minigin/Texture2D.cpp
   Minigin/Transform.cpp
- "Minigin/Component.h")
+  Minigin/TransformComponent.cpp
+ "Minigin/Component.h" "Minigin/TextComponent.h" "Minigin/TextComponent.cpp" "Minigin/TransformComponent.h" "Minigin/RenderComponent.h"   "Minigin/TextureComponent.h")
 
 # enable c++20 features
 target_compile_features(${TARGET_NAME} PUBLIC cxx_std_20)

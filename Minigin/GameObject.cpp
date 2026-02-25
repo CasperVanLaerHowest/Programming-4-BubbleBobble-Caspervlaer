@@ -2,25 +2,43 @@
 #include "GameObject.h"
 #include "ResourceManager.h"
 #include "Renderer.h"
+#include "TransformComponent.h"
+#include "RenderComponent.h"
+
+dae::GameObject::GameObject() {
+	AddComponent<TransformComponent>();
+}
 
 dae::GameObject::~GameObject() = default;
 
-void dae::GameObject::FixedUpdate([[maybe_unused]] float fixedTimeStap) {}
+void dae::GameObject::FixedUpdate([[maybe_unused]] float fixedTimeStap) {
+	for (const auto& component : m_components)
+	{
+		if (component != nullptr)
+		{
+			component->FixedUpdate(fixedTimeStap);
+		}
+	}
+}
 
-void dae::GameObject::Update([[maybe_unused]] float deltaTime){}
+void dae::GameObject::Update([[maybe_unused]] float deltaTime){
+	for (const auto& component : m_components)
+	{
+		if (component != nullptr)
+		{
+			component->Update(deltaTime);
+		}
+	}
+}
 
 void dae::GameObject::Render() const
 {
-	const auto& pos = m_transform.GetPosition();
-	Renderer::GetInstance().RenderTexture(*m_texture, pos.x, pos.y);
-}
-
-void dae::GameObject::SetTexture(const std::string& filename)
-{
-	m_texture = ResourceManager::GetInstance().LoadTexture(filename);
-}
-
-void dae::GameObject::SetPosition(float x, float y)
-{
-	m_transform.SetPosition(x, y, 0.0f);
+	const auto& transformComponent = GetComponent<TransformComponent>();
+	const auto& pos = transformComponent->GetPosition();
+	const auto& renderComponent = GetComponent<RenderComponent>();
+	Texture2D* texture = renderComponent ? renderComponent->GetTexture() : nullptr;
+	if (texture)
+	{
+		Renderer::GetInstance().RenderTexture(*texture, pos.x, pos.y);
+	}
 }

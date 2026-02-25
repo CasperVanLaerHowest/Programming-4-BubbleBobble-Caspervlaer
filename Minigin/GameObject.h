@@ -12,11 +12,8 @@ namespace dae
 	class Texture2D;
 	class GameObject final
 	{
-		Transform m_transform{};
-		std::shared_ptr<Texture2D> m_texture{};
 	public:
-
-		GameObject() = default;
+		explicit GameObject();
 		virtual ~GameObject();
 		GameObject(const GameObject& other) = delete;
 		GameObject(GameObject&& other) = delete;
@@ -26,9 +23,6 @@ namespace dae
 		virtual void FixedUpdate(float fixedTimeStap);
 		virtual void Update(float deltaTime);
 		virtual void Render() const;
-
-		void SetTexture(const std::string& filename);
-		void SetPosition(float x, float y);
 
 		template<std::derived_from<Component> T, typename... Args>
 		T* AddComponent(Args&&... args)
@@ -60,18 +54,24 @@ namespace dae
 		template<std::derived_from<Component> T>
 		T* GetComponent() const
 		{
-			constexpr ComponentTypeID id{ T::StaticTypeID };
-			if (m_components[id] == nullptr) {
-				return nullptr;
+			// Iterate through all components and use dynamic_cast to find a match
+			for (const auto& component : m_components)
+			{
+				if (component != nullptr)
+				{
+					if (T* casted = dynamic_cast<T*>(component.get()))
+					{
+						return casted;
+					}
+				}
 			}
-			return static_cast<T*>(m_components[id].get());
+			return nullptr;
 		}
 
 		template<std::derived_from<Component> T>
 		bool HasComponent() const
 		{
-			constexpr ComponentTypeID id{ T::StaticTypeID };
-			return m_components[id] != nullptr;
+			return GetComponent<T>() != nullptr;
 		}
 
 	private:
