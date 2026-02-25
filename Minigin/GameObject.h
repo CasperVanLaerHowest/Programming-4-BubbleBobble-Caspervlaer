@@ -10,7 +10,7 @@ namespace dae
 	static constexpr size_t MAX_COMPONENTS{ 32 };
 
 	class Texture2D;
-	class GameObject 
+	class GameObject final
 	{
 		Transform m_transform{};
 		std::shared_ptr<Texture2D> m_texture{};
@@ -44,6 +44,34 @@ namespace dae
 
 			m_components[id] = std::move(component);
 			return componentPtr;
+		}
+
+		template<std::derived_from<Component> T>
+		void RemoveComponent()
+		{
+			constexpr ComponentTypeID id{ T::StaticTypeID };
+
+			if(m_components[id] == nullptr) {
+				return;
+			}
+			m_components[id] = nullptr;
+		}
+
+		template<std::derived_from<Component> T>
+		T* GetComponent() const
+		{
+			constexpr ComponentTypeID id{ T::StaticTypeID };
+			if (m_components[id] == nullptr) {
+				return nullptr;
+			}
+			return static_cast<T*>(m_components[id].get());
+		}
+
+		template<std::derived_from<Component> T>
+		bool HasComponent() const
+		{
+			constexpr ComponentTypeID id{ T::StaticTypeID };
+			return m_components[id] != nullptr;
 		}
 
 	private:
