@@ -1,6 +1,7 @@
 ﻿#include <stdexcept>
 #include <sstream>
 #include <iostream>
+#include <thread>
 
 #if WIN32
 #define WIN32_LEAN_AND_MEAN 
@@ -91,8 +92,30 @@ void dae::Minigin::Run(const std::function<void()>& load)
 {
 	load();
 #ifndef __EMSCRIPTEN__
+
+
+	constexpr auto targetFrameRate{ std::chrono::duration<float>(1.f / 60.f) };
+	float fpsTimer{ 0.f };
+	int frameCount{ 0 };
+	auto lastTime{ std::chrono::high_resolution_clock::now() };
+
 	while (!m_quit)
+	{
+		const auto frameStartTime{ std::chrono::high_resolution_clock::now() };
+
+		m_deltaTime = std::chrono::duration<float>(frameStartTime - lastTime).count();
+		lastTime = frameStartTime;
+
 		RunOneFrame();
+
+
+		const auto frameEndTime{ std::chrono::high_resolution_clock::now() };
+		const auto frameDuration{ frameEndTime - frameStartTime };
+
+		if (frameDuration < targetFrameRate)
+			std::this_thread::sleep_for(targetFrameRate - frameDuration);
+	}
+		
 #else
 	emscripten_set_main_loop_arg(&LoopCallback, this, 0, true);
 #endif
@@ -101,7 +124,20 @@ void dae::Minigin::Run(const std::function<void()>& load)
 void dae::Minigin::RunOneFrame()
 {
 	m_quit = !InputManager::GetInstance().ProcessInput();
-	SceneManager::GetInstance().Update();
+	SceneManager::GetInstance().Update(m_deltaTime);
 	Renderer::GetInstance().Render();
-	//help me fix
+}
+
+
+void dae::Minigin::CalculateFPS(float& fpsTimer, int& frameCount)
+{
+	fpsTimer += m_deltaTime;
+	++frameCount;
+
+	if (fpsTimer >= 1.f)
+	{
+		//std::cout << "FPS: " << frameCount << "\n";
+		frameCount = 0;
+		fpsTimer = 0.f;
+	}
 }
