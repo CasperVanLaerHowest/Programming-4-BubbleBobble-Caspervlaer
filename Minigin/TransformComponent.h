@@ -20,12 +20,33 @@ namespace dae
 		void Update([[maybe_unused]] float deltatime) override {}
 		void Render() const override {}
 
-		void SetLocalPosition(float x, float y, float z = 0.f) { m_LocalPosition = { x, y, z }; }
-		const glm::vec3& GeLocalPosition() const { return m_LocalPosition; }
-		void SetWorldPosition(float x, float y, float z = 0.f) { m_WorldPosition = { x, y, z }; }
-		const glm::vec3& GetWorldPosition() const { return m_WorldPosition; }
+		// World position (calculated from parent + relative)
+		const glm::vec3& GetWorldPosition();
+		
+		// Local/Relative position (offset from parent)
+		void SetLocalPosition(float x, float y, float z);
+		const glm::vec3& GetLocalPosition() const { return m_LocalPosition; }
+
+		// Convenience - GetPosition returns world position
+		const glm::vec3& GetPosition() { return GetWorldPosition(); }
+
+		void SetScale(float x, float y, float z);
+		const glm::vec3& GetScale();
+
+		void SetRotation(float x, float y, float z);
+		const glm::vec3& GetRotation();
+
+		bool IsDirty() const { return m_IsDirty; }
+		void SetDirtyFlag(bool flag) { m_IsDirty = flag; }
+
 	private:
-		glm::vec3 m_LocalPosition{ 0.f, 0.f, 0.f };
-		glm::vec3 m_WorldPosition{ 0.f, 0.f, 0.f };
+		void UpdateWorldPosition();
+
+		glm::vec3 m_LocalPosition{ 0.f, 0.f, 0.f };   // Position relative to parent
+		glm::vec3 m_WorldPosition{ 0.f, 0.f, 0.f };   // Cached world position
+		glm::vec3 m_Scale{ 1.f, 1.f, 1.f };
+		glm::vec3 m_Rotation{ 0.f, 0.f, 0.f };
+
+		bool m_IsDirty = true;
 	};
 }
