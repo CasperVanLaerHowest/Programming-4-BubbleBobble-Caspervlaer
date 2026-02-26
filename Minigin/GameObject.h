@@ -83,6 +83,6 @@ namespace dae
 	private:
 		std::array<std::unique_ptr<Component>, MAX_COMPONENTS> m_components{};
 		std::vector<GameObject*> m_pChildren{};
-		GameObject* m_pParent;
+		GameObject* m_pParent{ nullptr };
 	};
 }

@@ -27,9 +27,6 @@ namespace dae
 		void SetLocalPosition(float x, float y, float z);
 		const glm::vec3& GetLocalPosition() const { return m_LocalPosition; }
 
-		// Convenience - GetPosition returns world position
-		const glm::vec3& GetPosition() { return GetWorldPosition(); }
-
 		void SetScale(float x, float y, float z);
 		const glm::vec3& GetScale();
 

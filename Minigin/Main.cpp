@@ -14,6 +14,7 @@
 #include "TextComponent.h"
 #include "TransformComponent.h"
 #include "FPSComponent.h"
+#include "RotatorComponent.h"
 
 #include <filesystem>
 namespace fs = std::filesystem;
@@ -50,7 +51,23 @@ static void load()
 	go->GetComponent<dae::TransformComponent>()->SetLocalPosition(20, 20, 0);
 	scene.Add(std::move(go));
 
+	auto go1 = std::make_unique<dae::GameObject>();
+	auto go2 = std::make_unique<dae::GameObject>();
+	auto go3 = std::make_unique<dae::GameObject>();
 
+	go1->GetComponent<dae::TransformComponent>()->SetLocalPosition(400, 300, 0);
+	
+	go2->AddComponent<dae::TextureComponent>()->SetTexture("logo.png");
+	go2->AddComponent<dae::RotatorComponent>(100.f, 90.f);
+	go2->SetParent(go1.get(), false);
+
+	go3->AddComponent<dae::TextureComponent>()->SetTexture("logo.png");
+	go3->AddComponent<dae::RotatorComponent>(100.f, -180.f);
+	go3->SetParent(go2.get(), false);
+
+	scene.Add(std::move(go1));
+	scene.Add(std::move(go2));
+	scene.Add(std::move(go3));
 }
 
 int main(int, char*[]) {
