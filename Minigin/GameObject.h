@@ -72,9 +72,17 @@ namespace dae
 		bool HasComponent() const
 		{
 			return GetComponent<T>() != nullptr;
-		}
+		}	 
+
+		void SetParent(GameObject* parent);
+		GameObject* GetParent() const { return m_pParent; }
+		void AddChild(GameObject* child);
+		void RemoveChild(GameObject* child);
+		const std::vector<GameObject*>& GetChildren() const { return m_pChildren; }
 
 	private:
 		std::array<std::unique_ptr<Component>, MAX_COMPONENTS> m_components{};
+		std::vector<GameObject*> m_pChildren{};
+		GameObject* m_pParent;
 	};
 }

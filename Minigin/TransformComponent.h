@@ -20,9 +20,12 @@ namespace dae
 		void Update([[maybe_unused]] float deltatime) override {}
 		void Render() const override {}
 
-		void SetPosition(float x, float y, float z = 0.f) { m_LocalPosition = { x, y, z }; }
-		const glm::vec3& GetPosition() const { return m_LocalPosition; }
+		void SetLocalPosition(float x, float y, float z = 0.f) { m_LocalPosition = { x, y, z }; }
+		const glm::vec3& GeLocalPosition() const { return m_LocalPosition; }
+		void SetWorldPosition(float x, float y, float z = 0.f) { m_WorldPosition = { x, y, z }; }
+		const glm::vec3& GetWorldPosition() const { return m_WorldPosition; }
 	private:
 		glm::vec3 m_LocalPosition{ 0.f, 0.f, 0.f };
+		glm::vec3 m_WorldPosition{ 0.f, 0.f, 0.f };
 	};
 }
