@@ -33,6 +33,7 @@ void dae::GameObject::Update([[maybe_unused]] float deltaTime){
 
 void dae::GameObject::Render() const
 {
+	// Render texture if available
 	const auto& transformComponent = GetComponent<TransformComponent>();
 	const auto& pos = transformComponent->GetWorldPosition();
 	const auto& renderComponent = GetComponent<RenderComponent>();
@@ -40,6 +41,15 @@ void dae::GameObject::Render() const
 	if (texture)
 	{
 		Renderer::GetInstance().RenderTexture(*texture, pos.x, pos.y);
+	}
+
+	// Call Render() on all components (including ImGuiComponent)
+	for (const auto& component : m_components)
+	{
+		if (component != nullptr)
+		{
+			component->Render();
+		}
 	}
 }
 

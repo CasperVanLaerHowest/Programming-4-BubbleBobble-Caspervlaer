@@ -43,25 +43,23 @@ void dae::Renderer::Init(SDL_Window* window)
 
 void dae::Renderer::Render() const
 {
-	// imgui
+	// imgui - Start new frame
 	ImGui_ImplSDLRenderer3_NewFrame();
 	ImGui_ImplSDL3_NewFrame();
 	ImGui::NewFrame();
 
-	ImGui::ShowDemoWindow(); // For demonstration purposes, do not keep this in your engine
-
-	ImGui::Render();
-
-
-
+	// Clear screen
 	const auto& color = GetBackgroundColor();
 	SDL_SetRenderDrawColor(m_renderer, color.r, color.g, color.b, color.a);
 	SDL_RenderClear(m_renderer);
 
+	// Render all game objects (including ImGuiComponent)
 	SceneManager::GetInstance().Render();
 
-	// imgui
+	// imgui - Finalize AFTER all ImGui calls from components
+	ImGui::Render();
 	ImGui_ImplSDLRenderer3_RenderDrawData(ImGui::GetDrawData(), m_renderer);
+	
 	SDL_RenderPresent(m_renderer);
 }
 

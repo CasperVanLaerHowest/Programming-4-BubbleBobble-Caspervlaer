@@ -28,7 +28,7 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   Minigin/Transform.cpp
   Minigin/TransformComponent.cpp
  "Minigin/Component.h" "Minigin/TextComponent.h" "Minigin/TextComponent.cpp" "Minigin/TransformComponent.h" "Minigin/RenderComponent.h"   "Minigin/TextureComponent.h" "Minigin/FPSComponent.h" "Minigin/FPSComponent.cpp" 
- Minigin/RotatorComponent.cpp)
+ Minigin/RotatorComponent.cpp "Minigin/ImGuiComponent.cpp" "Minigin/ImGuiComponent.h")
 
 # enable c++20 features
 target_compile_features(${TARGET_NAME} PUBLIC cxx_std_20)
@@ -122,7 +122,7 @@ add_library(imgui STATIC
   ${imgui_SOURCE_DIR}/imgui_demo.cpp
   ${imgui_SOURCE_DIR}/backends/imgui_impl_sdl3.cpp
   ${imgui_SOURCE_DIR}/backends/imgui_impl_sdlrenderer3.cpp
-)
+ "Minigin/ImGuiComponent.cpp" "Minigin/ImGuiComponent.h")
 
 target_include_directories(imgui PUBLIC 
   ${imgui_SOURCE_DIR}

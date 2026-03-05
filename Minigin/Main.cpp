@@ -15,6 +15,7 @@
 #include "TransformComponent.h"
 #include "FPSComponent.h"
 #include "RotatorComponent.h"
+#include "ImGuiComponent.h"
 
 #include <filesystem>
 namespace fs = std::filesystem;
@@ -64,6 +65,10 @@ static void load()
 	go3->AddComponent<dae::TextureComponent>()->SetTexture("logo.png");
 	go3->AddComponent<dae::RotatorComponent>(100.f, -180.f);
 	go3->SetParent(go2.get(), false);
+
+	go = std::make_unique<dae::GameObject>();
+	go->AddComponent<dae::ImGuiComponent>();
+	scene.Add(std::move(go));
 
 	scene.Add(std::move(go1));
 	scene.Add(std::move(go2));
