@@ -1,4 +1,6 @@
 #include "ControllerInput.h"
+
+#ifdef _WIN32
 #include <Xinput.h>
 
 class ControllerInput::Impl
@@ -69,16 +71,26 @@ public:
 
 ControllerInput::ControllerInput() : m_pImpl(std::make_unique<Impl>()) {}
 
+#else
+// Non-Windows stub: no XInput support
+class ControllerInput::Impl {};
+
+ControllerInput::ControllerInput() : m_pImpl(std::make_unique<Impl>()) {}
+
+#endif
+
 ControllerInput::~ControllerInput() = default;
 
 ControllerInput::ControllerInput(ControllerInput&& other) noexcept = default;
 
 ControllerInput& ControllerInput::operator=(ControllerInput&& other) noexcept = default;
 
-bool ControllerInput::IsPressed(Inputs input)
+bool ControllerInput::IsPressed([[maybe_unused]] Inputs input)
 {
+#ifdef _WIN32
 	if (m_pImpl) {
 		return m_pImpl->IsPressed(input);
 	}
+#endif
 	return false;
 }

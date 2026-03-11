@@ -1,6 +1,8 @@
 #pragma once
 #include <memory>
+#ifdef _WIN32
 #include <Windows.h>
+#endif
 
 enum class Inputs
 {
