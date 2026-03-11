@@ -16,6 +16,8 @@
 #include "FPSComponent.h"
 #include "RotatorComponent.h"
 #include "ImGuiComponent.h"
+#include "InputManager.h"
+#include "MoveCommand.h"
 
 #include <filesystem>
 namespace fs = std::filesystem;
@@ -26,14 +28,11 @@ static void load()
 
 	auto go = std::make_unique<dae::GameObject>();
 	go->AddComponent<dae::TextureComponent>()->SetTexture("background.png");
-	//go->SetTexture("background.png");
 	scene.Add(std::move(go));
 
 	go = std::make_unique<dae::GameObject>();
 	go->AddComponent<dae::TextureComponent>()->SetTexture("logo.png");
 	go->GetComponent<dae::TransformComponent>()->SetLocalPosition(358, 180,0);
-	//go->SetTexture("logo.png");
-	//go->SetPosition(358, 180);
 	scene.Add(std::move(go));
 
 	auto font = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 36);
@@ -41,9 +40,6 @@ static void load()
 	go = std::make_unique<dae::GameObject>();
 	go->AddComponent<dae::TextComponent>("Programming 4 Assignment", font);
 	go->GetComponent<dae::TransformComponent>()->SetLocalPosition(292, 20, 0);
-	//auto to = std::make_unique<dae::TextObject>("Programming 4 Assignment", font);
-	//to->SetColor({ 255, 255, 0, 255 });
-	//to->SetPosition(292, 20);
 	scene.Add(std::move(go));
 
 	go = std::make_unique<dae::GameObject>();
@@ -52,27 +48,35 @@ static void load()
 	go->GetComponent<dae::TransformComponent>()->SetLocalPosition(20, 20, 0);
 	scene.Add(std::move(go));
 
-	auto go1 = std::make_unique<dae::GameObject>();
-	auto go2 = std::make_unique<dae::GameObject>();
-	auto go3 = std::make_unique<dae::GameObject>();
-
-	go1->GetComponent<dae::TransformComponent>()->SetLocalPosition(400, 300, 0);
-	
-	go2->AddComponent<dae::TextureComponent>()->SetTexture("logo.png");
-	go2->AddComponent<dae::RotatorComponent>(100.f, 90.f);
-	go2->SetParent(go1.get(), false);
-
-	go3->AddComponent<dae::TextureComponent>()->SetTexture("logo.png");
-	go3->AddComponent<dae::RotatorComponent>(100.f, -180.f);
-	go3->SetParent(go2.get(), false);
-
 	go = std::make_unique<dae::GameObject>();
-	go->AddComponent<dae::ImGuiComponent>();
+	go->GetComponent<dae::TransformComponent>()->SetLocalPosition(400, 300, 0);
+	go->AddComponent<dae::TextureComponent>()->SetTexture("Sprite1.png");
+	dae::InputManager::GetInstance().BindCommand(SDL_SCANCODE_A, std::make_unique<MoveCommand>(go.get(), Direction::LEFT));
+	dae::InputManager::GetInstance().BindCommand(SDL_SCANCODE_D, std::make_unique<MoveCommand>(go.get(), Direction::RIGHT));
+	dae::InputManager::GetInstance().BindCommand(SDL_SCANCODE_W, std::make_unique<MoveCommand>(go.get(), Direction::UP));
+	dae::InputManager::GetInstance().BindCommand(SDL_SCANCODE_S, std::make_unique<MoveCommand>(go.get(), Direction::DOWN));
 	scene.Add(std::move(go));
 
-	scene.Add(std::move(go1));
-	scene.Add(std::move(go2));
-	scene.Add(std::move(go3));
+	go = std::make_unique<dae::GameObject>();
+	go->GetComponent<dae::TransformComponent>()->SetLocalPosition(450, 300, 0);
+	go->AddComponent<dae::TextureComponent>()->SetTexture("Sprite2.png");
+	auto cmdLeft = std::make_unique<MoveCommand>(go.get(), Direction::LEFT);
+	cmdLeft->SetSpeed(200.f);
+	dae::InputManager::GetInstance().BindCommand(Inputs::DPAD_LEFT, std::move(cmdLeft));
+
+	auto cmdRight = std::make_unique<MoveCommand>(go.get(), Direction::RIGHT);
+	cmdRight->SetSpeed(200.f);
+	dae::InputManager::GetInstance().BindCommand(Inputs::DPAD_RIGHT, std::move(cmdRight));
+
+	auto cmdUp = std::make_unique<MoveCommand>(go.get(), Direction::UP);
+	cmdUp->SetSpeed(200.f);
+	dae::InputManager::GetInstance().BindCommand(Inputs::DPAD_UP, std::move(cmdUp));
+
+	auto cmdDown = std::make_unique<MoveCommand>(go.get(), Direction::DOWN);
+	cmdDown->SetSpeed(200.f);
+	dae::InputManager::GetInstance().BindCommand(Inputs::DPAD_DOWN, std::move(cmdDown));
+	scene.Add(std::move(go));
+	
 }
 
 int main(int, char*[]) {

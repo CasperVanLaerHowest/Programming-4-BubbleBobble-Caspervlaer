@@ -16,6 +16,7 @@
 #include "SceneManager.h"
 #include "Renderer.h"
 #include "ResourceManager.h"
+#include "GameTime.h"
 
 SDL_Window* g_window{};
 
@@ -95,19 +96,18 @@ void dae::Minigin::Run(const std::function<void()>& load)
 
 
 	constexpr auto targetFrameRate{ std::chrono::duration<float>(1.f / 60.f) };
-	float fpsTimer{ 0.f };
-	int frameCount{ 0 };
 	auto lastTime{ std::chrono::high_resolution_clock::now() };
 
 	while (!m_quit)
 	{
 		const auto frameStartTime{ std::chrono::high_resolution_clock::now() };
-
+		
 		m_deltaTime = std::chrono::duration<float>(frameStartTime - lastTime).count();
+		GameTime::GetInstance().SetDeltaTime(m_deltaTime);
+
 		lastTime = frameStartTime;
 
 		RunOneFrame();
-		CalculateFPS(fpsTimer, frameCount);
 
 		const auto frameEndTime{ std::chrono::high_resolution_clock::now() };
 		const auto frameDuration{ frameEndTime - frameStartTime };
@@ -134,19 +134,4 @@ void dae::Minigin::RunOneFrame()
 
 	SceneManager::GetInstance().Update(m_deltaTime);
 	Renderer::GetInstance().Render();
-}
-
-
-void dae::Minigin::CalculateFPS(float& fpsTimer, int& frameCount)
-{
-	fpsTimer += m_deltaTime;
-	++frameCount;
-
-	if (fpsTimer >= 1.f)
-	{
-		m_CurrentFPS = static_cast<float>(frameCount) / fpsTimer;
-		//std::cout << "FPS: " << frameCount << "\n";
-		frameCount = 0;
-		fpsTimer = 0.f;
-	}
 }

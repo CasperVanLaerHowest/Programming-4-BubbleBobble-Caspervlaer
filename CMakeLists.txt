@@ -28,7 +28,9 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   Minigin/Transform.cpp
   Minigin/TransformComponent.cpp
  "Minigin/Component.h" "Minigin/TextComponent.h" "Minigin/TextComponent.cpp" "Minigin/TransformComponent.h" "Minigin/RenderComponent.h"   "Minigin/TextureComponent.h" "Minigin/FPSComponent.h" "Minigin/FPSComponent.cpp" 
- Minigin/RotatorComponent.cpp "Minigin/ImGuiComponent.cpp" "Minigin/ImGuiComponent.h")
+ Minigin/RotatorComponent.cpp "Minigin/ImGuiComponent.cpp" "Minigin/ImGuiComponent.h"
+ Minigin/MoveCommand.cpp Minigin/MoveCommand.h Minigin/Command.h Minigin/GameTime.h
+ Minigin/ControllerInput.cpp Minigin/ControllerInput.h)
 
 # enable c++20 features
 target_compile_features(${TARGET_NAME} PUBLIC cxx_std_20)
@@ -158,6 +160,10 @@ target_link_libraries("${TARGET_NAME}" PUBLIC
   imgui
   ${VLD_LIBRARIES}
 )
+
+if(WIN32)
+  target_link_libraries("${TARGET_NAME}" PUBLIC Xinput)
+endif()
 
 if(MSVC)
   # compile at warning level 4 + treat warnings as errors
