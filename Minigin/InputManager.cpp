@@ -79,7 +79,7 @@ void dae::InputManager::ExecuteCommand()
 	for (auto& command : m_ControllerCommands)
 	{
 		if (IsPressed(command.first)) {
-			command.second->Execute(true);
+			command.second->Execute(m_ControllerInputState[command.first]);
 		}
 	}
 

@@ -20,9 +20,7 @@ namespace dae
 		RotatorComponent& operator=(const RotatorComponent& other) = delete;
 		RotatorComponent& operator=(RotatorComponent&& other) = delete;
 
-		void FixedUpdate(float /*fixedTimeStep*/) override {}
 		void Update(float deltaTime) override;
-		void Render() const override {}
 
 		void SetRadius(float radius) { m_Radius = radius; }
 		void SetRotationSpeed(float degreesPerSecond) { m_RotationSpeed = degreesPerSecond; }

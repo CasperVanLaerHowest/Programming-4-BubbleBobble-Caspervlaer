@@ -1,6 +1,6 @@
 #pragma once
 #include <memory>
-#include <Texture2D.h>
+#include "Texture2D.h"
 #include "ResourceManager.h"
 #include "RenderComponent.h"
 
@@ -20,10 +20,6 @@ namespace dae
 		TextureComponent(TextureComponent&& other) = delete;
 		TextureComponent& operator=(const TextureComponent& other) = delete;
 		TextureComponent& operator=(TextureComponent&& other) = delete;
-
-		void FixedUpdate(float /*fixedTimeStap*/) override {}
-		void Update(float /*deltatime*/) override {}
-		void Render() const override {}
 
 		void SetTexture(const std::string& filename) {
 			m_TextTexture = ResourceManager::GetInstance().LoadTexture(filename);

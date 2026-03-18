@@ -21,10 +21,8 @@ namespace dae
 		TextComponent& operator=(const TextComponent& other) = delete;
 		TextComponent& operator=(TextComponent&& other) = delete;
 
-		void FixedUpdate([[maybe_unused]] float fixedTimeStap) override {}
 		void Update([[maybe_unused]] float deltatime) override;
-		void Render() const override {}
-
+		
 		void SetText(const std::string& text);
 		void SetColor(const SDL_Color& color);
 

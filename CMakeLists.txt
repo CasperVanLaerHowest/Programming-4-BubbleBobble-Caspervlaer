@@ -30,7 +30,14 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
  "Minigin/Component.h" "Minigin/TextComponent.h" "Minigin/TextComponent.cpp" "Minigin/TransformComponent.h" "Minigin/RenderComponent.h"   "Minigin/TextureComponent.h" "Minigin/FPSComponent.h" "Minigin/FPSComponent.cpp" 
  Minigin/RotatorComponent.cpp "Minigin/ImGuiComponent.cpp" "Minigin/ImGuiComponent.h"
  Minigin/MoveCommand.cpp Minigin/MoveCommand.h Minigin/Command.h Minigin/GameTime.h
- Minigin/ControllerInput.cpp Minigin/ControllerInput.h)
+ Minigin/ControllerInput.cpp Minigin/ControllerInput.h
+ Minigin/HealthComponent.cpp Minigin/HealthComponent.h
+ Minigin/HealthObserver.cpp Minigin/HealthObserver.h
+ Minigin/TakeDamageCommand.cpp Minigin/TakeDamageCommand.h
+ Minigin/AddScoreCommand.cpp Minigin/AddScoreCommand.h
+ Minigin/ScoreComponent.cpp Minigin/ScoreComponent.h
+ Minigin/ScoreObserver.cpp Minigin/ScoreObserver.h
+ Minigin/Subject.h Minigin/Observer.h)
 
 # enable c++20 features
 target_compile_features(${TARGET_NAME} PUBLIC cxx_std_20)
@@ -147,7 +154,6 @@ target_include_directories("${TARGET_NAME}" PUBLIC
   ${CMAKE_SOURCE_DIR}/Minigin/
   ${glm_SOURCE_DIR}
   ${sdl3_SOURCE_DIR}/include
-  ${sdl3_image_SOURCE_DIR}/include
   ${sdl3_ttf_SOURCE_DIR}/include
   ${imgui_SOURCE_DIR}
   ${VLD_INCLUDE_DIR}
