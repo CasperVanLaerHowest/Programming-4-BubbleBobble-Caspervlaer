@@ -2,7 +2,7 @@
 #include "TransformComponent.h"
 #include "GameTime.h"
 
-MoveCommand::MoveCommand(dae::GameObject* pGameObject, Direction direction)
+MoveCommand::MoveCommand(dae::GameObject* pGameObject, const glm::vec2& direction)
 	: m_pGameObject{ pGameObject }, m_Direction{ direction }
 {
 	m_Speed = 100.0f;
@@ -16,24 +16,13 @@ void MoveCommand::Execute(bool notfirstExecute)
 	}
 	
 	auto transform = m_pGameObject->GetComponent<dae::TransformComponent>();
-	auto pos = transform->GetLocalPosition();
-	
-
-	switch (m_Direction)
+	if (transform)
 	{
-	case Direction::UP:
-		transform->SetLocalPosition(pos.x, pos.y - (m_Speed * GameTime::GetInstance().GetDeltaTime()), pos.z);
-		break;
-	case Direction::DOWN:
-		transform->SetLocalPosition(pos.x, pos.y + (m_Speed * GameTime::GetInstance().GetDeltaTime()), pos.z);
-		break;
-	case Direction::LEFT:
-		transform->SetLocalPosition(pos.x - (m_Speed * GameTime::GetInstance().GetDeltaTime()), pos.y, pos.z);
-		break;
-	case Direction::RIGHT:
-		transform->SetLocalPosition(pos.x + (m_Speed * GameTime::GetInstance().GetDeltaTime()), pos.y, pos.z);
-		break;
-	case Direction::NONE:
-		break;
+		auto pos = transform->GetLocalPosition();
+		float dt = GameTime::GetInstance().GetDeltaTime();
+		
+		transform->SetLocalPosition(pos.x + (m_Direction.x * m_Speed * dt), 
+		                            pos.y + (m_Direction.y * m_Speed * dt), 
+		                            pos.z);
 	}
 }

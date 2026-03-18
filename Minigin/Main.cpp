@@ -76,10 +76,10 @@ static void load()
 	go->AddComponent<HealthComponent>(3)->AddObserver(healthText->GetComponent<HealthObserver>());
 	go->AddComponent<ScoreComponent>(0)->AddObserver(scoreText->GetComponent<ScoreObserver>());
 
-	dae::InputManager::GetInstance().BindCommand(SDL_SCANCODE_A, std::make_unique<MoveCommand>(go.get(), Direction::LEFT));
-	dae::InputManager::GetInstance().BindCommand(SDL_SCANCODE_D, std::make_unique<MoveCommand>(go.get(), Direction::RIGHT));
-	dae::InputManager::GetInstance().BindCommand(SDL_SCANCODE_W, std::make_unique<MoveCommand>(go.get(), Direction::UP));
-	dae::InputManager::GetInstance().BindCommand(SDL_SCANCODE_S, std::make_unique<MoveCommand>(go.get(), Direction::DOWN));
+	dae::InputManager::GetInstance().BindCommand(SDL_SCANCODE_A, std::make_unique<MoveCommand>(go.get(), glm::vec2{-1, 0}));
+	dae::InputManager::GetInstance().BindCommand(SDL_SCANCODE_D, std::make_unique<MoveCommand>(go.get(), glm::vec2{1, 0}));
+	dae::InputManager::GetInstance().BindCommand(SDL_SCANCODE_W, std::make_unique<MoveCommand>(go.get(), glm::vec2{0, -1}));
+	dae::InputManager::GetInstance().BindCommand(SDL_SCANCODE_S, std::make_unique<MoveCommand>(go.get(), glm::vec2{0, 1}));
 
 	dae::InputManager::GetInstance().BindCommand(SDL_SCANCODE_K, std::make_unique<TakeDamageCommand>(go.get()));
 	dae::InputManager::GetInstance().BindCommand(SDL_SCANCODE_Z, std::make_unique<AddScoreCommand>(go.get()));
@@ -108,19 +108,19 @@ static void load()
 	go->AddComponent<HealthComponent>(3)->AddObserver(healthText->GetComponent<HealthObserver>());
 	go->AddComponent<ScoreComponent>(0)->AddObserver(scoreText->GetComponent<ScoreObserver>());
 
-	auto cmdLeft = std::make_unique<MoveCommand>(go.get(), Direction::LEFT);
+	auto cmdLeft = std::make_unique<MoveCommand>(go.get(), glm::vec2{-1, 0});
 	cmdLeft->SetSpeed(200.f);
 	dae::InputManager::GetInstance().BindCommand(Inputs::DPAD_LEFT, std::move(cmdLeft));
 
-	auto cmdRight = std::make_unique<MoveCommand>(go.get(), Direction::RIGHT);
+	auto cmdRight = std::make_unique<MoveCommand>(go.get(), glm::vec2{1, 0});
 	cmdRight->SetSpeed(200.f);
 	dae::InputManager::GetInstance().BindCommand(Inputs::DPAD_RIGHT, std::move(cmdRight));
 
-	auto cmdUp = std::make_unique<MoveCommand>(go.get(), Direction::UP);
+	auto cmdUp = std::make_unique<MoveCommand>(go.get(), glm::vec2{0, -1});
 	cmdUp->SetSpeed(200.f);
 	dae::InputManager::GetInstance().BindCommand(Inputs::DPAD_UP, std::move(cmdUp));
 
-	auto cmdDown = std::make_unique<MoveCommand>(go.get(), Direction::DOWN);
+	auto cmdDown = std::make_unique<MoveCommand>(go.get(), glm::vec2{0, 1});
 	cmdDown->SetSpeed(200.f);
 	dae::InputManager::GetInstance().BindCommand(Inputs::DPAD_DOWN, std::move(cmdDown));
 
