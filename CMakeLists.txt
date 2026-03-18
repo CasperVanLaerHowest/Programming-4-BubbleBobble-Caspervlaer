@@ -147,6 +147,7 @@ if (WIN32)
 endif()
 
 # Add steam if available
+set(STEAMWORKS_ROOT "${CMAKE_SOURCE_DIR}/steamworks_sdk_163" CACHE PATH "Path to Steamworks SDK" FORCE)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/steam")
 find_package(Steamworks QUIET)
 

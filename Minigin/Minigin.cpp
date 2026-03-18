@@ -1,4 +1,4 @@
-﻿#include <stdexcept>
+#include <stdexcept>
 #include <sstream>
 #include <iostream>
 #include <thread>
@@ -17,6 +17,13 @@
 #include "Renderer.h"
 #include "ResourceManager.h"
 #include "GameTime.h"
+
+#if USE_STEAMWORKS
+#pragma warning (push)
+#pragma warning (disable:4996)
+#include <steam_api.h>
+#pragma warning (pop)
+#endif
 
 SDL_Window* g_window{};
 
@@ -58,6 +65,11 @@ void PrintSDLVersion()
 
 dae::Minigin::Minigin(const std::filesystem::path& dataPath)
 {
+#if USE_STEAMWORKS
+    if (!SteamAPI_Init())
+        throw std::runtime_error(std::string("Fatal Error - Steam must be running to play this game (SteamAPI_Init() failed)."));
+#endif
+
 	PrintSDLVersion();
 	
 	if (!SDL_InitSubSystem(SDL_INIT_VIDEO))
@@ -83,6 +95,9 @@ dae::Minigin::Minigin(const std::filesystem::path& dataPath)
 
 dae::Minigin::~Minigin()
 {
+#if USE_STEAMWORKS
+    SteamAPI_Shutdown();
+#endif
 	Renderer::GetInstance().Destroy();
 	SDL_DestroyWindow(g_window);
 	g_window = nullptr;
@@ -123,6 +138,9 @@ void dae::Minigin::Run(const std::function<void()>& load)
 
 void dae::Minigin::RunOneFrame()
 {
+#if USE_STEAMWORKS
+    SteamAPI_RunCallbacks();
+#endif
 	m_quit = !InputManager::GetInstance().ProcessInput();
 
 	m_frameLag += m_deltaTime;
