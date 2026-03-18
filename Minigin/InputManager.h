@@ -23,7 +23,9 @@ namespace dae
 		std::map<Inputs, std::unique_ptr<Command>> m_ControllerCommands;
 		std::unique_ptr<ControllerInput> m_ControllerInput{ std::make_unique<ControllerInput>() };
 		std::map<Inputs, bool> m_ControllerInputState;
+		std::map<Inputs, bool> m_PreviousControllerInputState;
 		std::map<SDL_Scancode, bool> m_KeyboardInputState;
+		std::map<SDL_Scancode, bool> m_PreviousKeyboardInputState;
 
 		void ExecuteCommand();
 		void UpdateKeyboardInputState();
