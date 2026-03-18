@@ -1,4 +1,7 @@
 #include "HealthObserver.h"
+
+#include <string>
+
 #include "TextComponent.h"
 #include "HealthComponent.h"
 #include "GameObject.h"

@@ -1,5 +1,7 @@
 #include "ScoreObserver.h"
 
+#include <string>
+
 #include "TextComponent.h"
 #include "ScoreComponent.h"
 #include "GameObject.h"

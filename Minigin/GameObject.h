@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <memory>
+#include <vector>
 #include "Transform.h"
 #include <array>
 #include "Component.h"
