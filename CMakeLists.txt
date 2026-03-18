@@ -1,4 +1,9 @@
 cmake_minimum_required(VERSION 3.26)
+
+if(POLICY CMP0144)
+  cmake_policy(SET CMP0144 NEW)
+endif()
+
 project(Minigin)
 
 if(EMSCRIPTEN)
