@@ -11,9 +11,9 @@ public:
 
 	HealthComponent(dae::GameObject* owner, int health);
 	virtual ~HealthComponent() = default;
-	void FixedUpdate(float) override;
-	void Update(float) override {}
-	void Render() const override {}
+	void FixedUpdate(float) override {};
+	void Update(float) override {};
+	void Render() const override {};
 
 	void TakeDamage();
 	int GetHealth() const { return m_Health; }
@@ -22,5 +22,5 @@ private:
 	int m_Health;
 	int m_MaxHealth;
 
-	bool m_DirtyFlag = true;
+	void CheckDeath();
 };

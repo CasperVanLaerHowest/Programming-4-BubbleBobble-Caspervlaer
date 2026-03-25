@@ -12,13 +12,11 @@ public:
 	ScoreComponent(dae::GameObject* owner, int score = 0);
     virtual ~ScoreComponent() = default;
 
-	void FixedUpdate(float /*fixedTimeStep*/) override;
+	void Update(float /*deltaTime*/) override {};
 
 	void AddScore(int score);
     int GetScore() const { return m_Score; }
 
 private:
 	int m_Score;
-
-	bool m_DirtyFlag{ false };
 };
