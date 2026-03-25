@@ -24,6 +24,7 @@
 #include "ScoreComponent.h"
 #include "ScoreObserver.h"
 #include "AddScoreCommand.h"
+#include "SteamWinObserver.h"
 
 #include <filesystem>
 namespace fs = std::filesystem;
@@ -64,6 +65,7 @@ static void load()
 	scoreText->AddComponent<dae::TextComponent>("Score: 0", font2);
 	scoreText->GetComponent<dae::TransformComponent>()->SetLocalPosition(20, 150, 0);
 	scoreText->AddComponent<ScoreObserver>();
+	scoreText->AddComponent<SteamWinObserver>();
 	
 	auto controllsText = std::make_unique<dae::GameObject>();
 	controllsText->AddComponent<dae::TextComponent>("Use the WASD keys to move, K to take damage, Z to score points", font2);
@@ -75,6 +77,7 @@ static void load()
 	go->AddComponent<dae::TextureComponent>()->SetTexture("Sprite1.png");
 	go->AddComponent<HealthComponent>(3)->AddObserver(healthText->GetComponent<HealthObserver>());
 	go->AddComponent<ScoreComponent>(0)->AddObserver(scoreText->GetComponent<ScoreObserver>());
+	go->GetComponent<ScoreComponent>()->AddObserver(scoreText->GetComponent<SteamWinObserver>());
 
 	dae::InputManager::GetInstance().BindCommand(SDL_SCANCODE_A, std::make_unique<MoveCommand>(go.get(), glm::vec2{-1, 0}));
 	dae::InputManager::GetInstance().BindCommand(SDL_SCANCODE_D, std::make_unique<MoveCommand>(go.get(), glm::vec2{1, 0}));
@@ -96,6 +99,7 @@ static void load()
 	scoreText->AddComponent<dae::TextComponent>("Score: 0", font2);
 	scoreText->GetComponent<dae::TransformComponent>()->SetLocalPosition(20, 220, 0);
 	scoreText->AddComponent<ScoreObserver>();
+	scoreText->AddComponent<SteamWinObserver>();
 
 	controllsText = std::make_unique<dae::GameObject>();
 	controllsText->AddComponent<dae::TextComponent>("Use the D-Pad to move, A to take damage, B to score points", font2);
@@ -107,6 +111,7 @@ static void load()
 	go->AddComponent<dae::TextureComponent>()->SetTexture("Sprite2.png");
 	go->AddComponent<HealthComponent>(3)->AddObserver(healthText->GetComponent<HealthObserver>());
 	go->AddComponent<ScoreComponent>(0)->AddObserver(scoreText->GetComponent<ScoreObserver>());
+	go->GetComponent<ScoreComponent>()->AddObserver(scoreText->GetComponent<SteamWinObserver>());
 
 	auto cmdLeft = std::make_unique<MoveCommand>(go.get(), glm::vec2{-1, 0});
 	cmdLeft->SetSpeed(200.f);

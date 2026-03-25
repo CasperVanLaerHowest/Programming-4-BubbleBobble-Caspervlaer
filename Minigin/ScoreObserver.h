@@ -13,8 +13,4 @@ public:
     virtual ~ScoreObserver() = default;
 
 	void OnNotify(dae::GameObject& entity, dae::Event event) override;
-private:
-    const int m_WinScore = 500;
-    bool m_GameWon = false;
-    void CheckWinCondition(int score);
 };

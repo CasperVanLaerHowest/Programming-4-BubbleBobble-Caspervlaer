@@ -68,6 +68,7 @@ dae::Minigin::Minigin(const std::filesystem::path& dataPath)
 #if USE_STEAMWORKS
     if (!SteamAPI_Init())
         throw std::runtime_error(std::string("Fatal Error - Steam must be running to play this game (SteamAPI_Init() failed)."));
+    SteamInput()->Init(false);
 #endif
 
 	PrintSDLVersion();
@@ -96,6 +97,7 @@ dae::Minigin::Minigin(const std::filesystem::path& dataPath)
 dae::Minigin::~Minigin()
 {
 #if USE_STEAMWORKS
+    SteamInput()->Shutdown();
     SteamAPI_Shutdown();
 #endif
 	Renderer::GetInstance().Destroy();

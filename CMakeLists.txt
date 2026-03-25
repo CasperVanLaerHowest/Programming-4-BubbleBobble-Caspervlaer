@@ -41,7 +41,8 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
  Minigin/TakeDamageCommand.cpp Minigin/TakeDamageCommand.h
  Minigin/AddScoreCommand.cpp Minigin/AddScoreCommand.h
  Minigin/ScoreComponent.cpp Minigin/ScoreComponent.h
- Minigin/ScoreObserver.cpp Minigin/ScoreObserver.h
+  Minigin/ScoreObserver.cpp Minigin/ScoreObserver.h
+  Minigin/SteamWinObserver.cpp Minigin/SteamWinObserver.h
  Minigin/Subject.h Minigin/Observer.h)
 
 # enable c++20 features
