@@ -1,7 +1,7 @@
 #pragma once
 #include "Command.h"
 #include "GameObject.h"
-#include "ScoreComponent.h"
+#include "../Components/ScoreComponent.h"
 
 class AddScoreCommand final : 
     public Command

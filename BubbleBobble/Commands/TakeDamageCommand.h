@@ -1,10 +1,10 @@
 #pragma once
 #include "Command.h"
 #include "GameObject.h"
-#include "HealthComponent.h"
+#include "../Components/HealthComponent.h"
 
 class TakeDamageCommand final :
-    public Command 
+	public Command
 {
 public:
 	TakeDamageCommand(dae::GameObject* pGameObject);

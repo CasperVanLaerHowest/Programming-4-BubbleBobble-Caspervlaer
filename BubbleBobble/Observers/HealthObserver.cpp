@@ -2,8 +2,8 @@
 
 #include <string>
 
-#include "TextComponent.h"
-#include "HealthComponent.h"
+#include "../Components/TextComponent.h"
+#include "../Components/HealthComponent.h"
 #include "GameObject.h"
 
 HealthObserver::HealthObserver(dae::GameObject* owner)

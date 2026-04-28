@@ -11,20 +11,23 @@
 #include "Scene.h"
 #include "TextureComponent.h"
 #include "GameObject.h"
-#include "TextComponent.h"
 #include "TransformComponent.h"
-#include "FPSComponent.h"
-#include "RotatorComponent.h"
-#include "ImGuiComponent.h"
 #include "InputManager.h"
-#include "MoveCommand.h"
-#include "HealthComponent.h"
-#include "HealthObserver.h"
-#include "TakeDamageCommand.h"
-#include "ScoreComponent.h"
-#include "ScoreObserver.h"
-#include "AddScoreCommand.h"
-#include "SteamWinObserver.h"
+
+#include "Components/TextComponent.h"
+#include "Components/FPSComponent.h"
+#include "Components/RotatorComponent.h"
+#include "Components/ImGuiComponent.h"
+#include "Components/HealthComponent.h"
+#include "Components/ScoreComponent.h"
+
+#include "Commands/MoveCommand.h"
+#include "Commands/TakeDamageCommand.h"
+#include "Commands/AddScoreCommand.h"
+
+#include "Observers/HealthObserver.h"
+#include "Observers/ScoreObserver.h"
+#include "Observers/SteamWinObserver.h"
 
 #include <filesystem>
 namespace fs = std::filesystem;

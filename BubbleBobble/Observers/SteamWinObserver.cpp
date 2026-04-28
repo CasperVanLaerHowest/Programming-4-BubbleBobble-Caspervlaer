@@ -1,6 +1,6 @@
 #include "SteamWinObserver.h"
 
-#include "ScoreComponent.h"
+#include "../Components/ScoreComponent.h"
 #include "GameObject.h"
 
 #if USE_STEAMWORKS

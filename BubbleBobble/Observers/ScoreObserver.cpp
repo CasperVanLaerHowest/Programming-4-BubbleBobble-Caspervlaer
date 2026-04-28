@@ -2,8 +2,8 @@
 
 #include <string>
 
-#include "TextComponent.h"
-#include "ScoreComponent.h"
+#include "../Components/TextComponent.h"
+#include "../Components/ScoreComponent.h"
 #include "GameObject.h"
 
 ScoreObserver::ScoreObserver(dae::GameObject* owner)
