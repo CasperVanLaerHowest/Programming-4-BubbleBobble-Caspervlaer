@@ -90,4 +90,25 @@ elseif(WIN32)
   add_custom_command(TARGET ${TARGET_NAME} POST_BUILD
     COMMAND "${CMAKE_COMMAND}" -E copy_directory "${CMAKE_SOURCE_DIR}/Data" "$<TARGET_FILE_DIR:${TARGET_NAME}>/Data"
   )
+
+    # Copy SDL3 DLLs
+    add_custom_command(TARGET BubbleBobble POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "$<TARGET_FILE:SDL3::SDL3>"             # Gets the SDL3.dll
+        "$<TARGET_FILE_DIR:BubbleBobble>"
+    )
+
+    # Copy SDL3_ttf DLLs
+    add_custom_command(TARGET BubbleBobble POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "$<TARGET_FILE:SDL3_ttf::SDL3_ttf>"     # Gets the SDL3_ttf.dll
+        "$<TARGET_FILE_DIR:BubbleBobble>"
+    )
+
+    # Copy SDL3_mixer DLLs
+    add_custom_command(TARGET BubbleBobble POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "$<TARGET_FILE:SDL3_mixer::SDL3_mixer>" # Gets the SDL3_mixer.dll
+        "$<TARGET_FILE_DIR:BubbleBobble>"
+    )
 endif()

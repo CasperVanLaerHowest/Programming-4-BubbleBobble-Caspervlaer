@@ -17,6 +17,8 @@
 #include "Renderer.h"
 #include "ResourceManager.h"
 #include "GameTime.h"
+#include "Service/AudioLocator.h"
+#include "Service/AudioService.h"
 
 #if USE_STEAMWORKS
 #pragma warning (push)
@@ -92,6 +94,10 @@ dae::Minigin::Minigin(const std::filesystem::path& dataPath)
 
 	Renderer::GetInstance().Init(g_window);
 	ResourceManager::GetInstance().Init(dataPath);
+	AudioLocator::Initialize();
+
+	auto realAudio = std::make_unique<AudioService>();
+	AudioLocator::Provide(realAudio.get());
 }
 
 dae::Minigin::~Minigin()

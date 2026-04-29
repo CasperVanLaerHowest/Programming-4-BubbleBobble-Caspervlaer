@@ -29,7 +29,12 @@ add_library(Minigin STATIC
   Transform.cpp
   TransformComponent.cpp
   TransformComponent.h
-)
+  Service/IAudioService.h 
+  Service/NullAudioService.h 
+  Service/AudioService.h 
+  Service/AudioLocator.h 
+  Service/AudioLocator.cpp 
+  Service/AudioService.cpp)
 
 # Enable C++20
 target_compile_features(Minigin PUBLIC cxx_std_20)
@@ -39,6 +44,7 @@ target_include_directories(Minigin PUBLIC
   ${glm_SOURCE_DIR}
   ${sdl3_SOURCE_DIR}/include
   ${sdl3_ttf_SOURCE_DIR}/include
+  ${sdl3_mixer_SOURCE_DIR}/include
   ${imgui_SOURCE_DIR}
   ${VLD_INCLUDE_DIR}
 )
@@ -47,6 +53,7 @@ target_include_directories(Minigin PUBLIC
 target_link_libraries(Minigin PUBLIC
   SDL3::SDL3
   SDL3_ttf::SDL3_ttf
+  SDL3_mixer::SDL3_mixer
   glm::glm
   imgui
   ${VLD_LIBRARIES}
