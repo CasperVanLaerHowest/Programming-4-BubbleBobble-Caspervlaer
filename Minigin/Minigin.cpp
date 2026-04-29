@@ -94,10 +94,9 @@ dae::Minigin::Minigin(const std::filesystem::path& dataPath)
 
 	Renderer::GetInstance().Init(g_window);
 	ResourceManager::GetInstance().Init(dataPath);
-	AudioLocator::Initialize();
 
-	auto realAudio = std::make_unique<AudioService>();
-	AudioLocator::Provide(realAudio.get());
+	m_pAudioService = std::make_unique<AudioService>();
+	AudioLocator::Provide(m_pAudioService.get());
 }
 
 dae::Minigin::~Minigin()
@@ -110,6 +109,8 @@ dae::Minigin::~Minigin()
 	SDL_DestroyWindow(g_window);
 	g_window = nullptr;
 	SDL_Quit();
+
+	AudioLocator::Provide(nullptr);
 }
 
 void dae::Minigin::Run(const std::function<void()>& load)

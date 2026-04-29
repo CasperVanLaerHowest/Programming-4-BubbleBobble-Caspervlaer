@@ -3,6 +3,8 @@
 #include <functional>
 #include <filesystem>
 
+class AudioService;
+
 namespace dae
 {
 	class Minigin final
@@ -23,5 +25,7 @@ namespace dae
 		float m_deltaTime{ 0 };
 		float m_frameLag{ 0 };
 		const float m_fixedTimeStep{ 0.02f};
+
+		std::unique_ptr<AudioService> m_pAudioService;
 	};
 }
