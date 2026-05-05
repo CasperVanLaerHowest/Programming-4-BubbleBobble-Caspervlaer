@@ -14,6 +14,8 @@ public:
 	void Render() const override {};
 
 	void AddVelocity(const glm::vec2& velocity) { m_Velocity += velocity; }
+	void SetGravity(float gravity) { m_Gravity = gravity; }
+	void ResetGravity() { m_Gravity = 98.1f; }
 
 private:
 	glm::vec2 m_Velocity{ 0.f, 0.f };

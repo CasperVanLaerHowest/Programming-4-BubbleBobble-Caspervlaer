@@ -99,7 +99,6 @@ static void load()
 
 	go = std::make_unique<dae::GameObject>();
 	go->GetComponent<dae::TransformComponent>()->SetLocalPosition(400, 400, 0);
-	//go->AddComponent<PhysicsComponent>();
 	go->AddComponent<CollisionComponent>(glm::vec2{ 10, 10 }, glm::vec2{ -5, -5 });
 	go->AddComponent<dae::TextureComponent>()->SetTexture("FakeFloor.png");
 
