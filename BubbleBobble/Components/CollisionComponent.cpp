@@ -21,7 +21,6 @@ bool CollisionComponent::CheckCollision(const glm::vec2& predictedPos, const dae
 	if (otherTransform == nullptr || otherCollision == nullptr)
 		return false;
 		
-	// Use predictedPos instead of getting the current world position to check future collision
 	glm::vec2 thisPos = predictedPos + m_Offset;
 	glm::vec2 otherPos{ otherTransform->GetWorldPosition().x + otherCollision->GetOffset().x, otherTransform->GetWorldPosition().y + otherCollision->GetOffset().y };
 	
