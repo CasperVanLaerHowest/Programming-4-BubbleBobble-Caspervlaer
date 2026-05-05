@@ -106,13 +106,9 @@ dae::Minigin::~Minigin()
     SteamAPI_Shutdown();
 #endif
 	
-	// 1. Un-provide the locator
 	AudioLocator::Provide(nullptr);
-	
-	// 2. Destroy the audio service BEFORE SDL_Quit
 	m_pAudioService.reset(); 
 
-	// 3. Normal SDL cleanup
 	Renderer::GetInstance().Destroy();
 	SDL_DestroyWindow(g_window);
 	g_window = nullptr;
