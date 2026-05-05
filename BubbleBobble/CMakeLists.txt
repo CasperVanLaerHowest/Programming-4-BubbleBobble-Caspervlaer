@@ -32,7 +32,8 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   Observers/ScoreObserver.h
   Observers/SteamWinObserver.cpp
   Observers/SteamWinObserver.h
-)
+  Components/PhysicsComponent.h
+  Components/PhysicsComponent.cpp)
 
 target_compile_features(${TARGET_NAME} PUBLIC cxx_std_20)
 

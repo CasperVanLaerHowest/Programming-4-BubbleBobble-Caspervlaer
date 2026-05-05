@@ -20,6 +20,7 @@
 #include "Components/ImGuiComponent.h"
 #include "Components/HealthComponent.h"
 #include "Components/ScoreComponent.h"
+#include "Components/PhysicsComponent.h"
 
 #include "Commands/MoveCommand.h"
 #include "Commands/TakeDamageCommand.h"
@@ -77,6 +78,7 @@ static void load()
 
 	go = std::make_unique<dae::GameObject>();
 	go->GetComponent<dae::TransformComponent>()->SetLocalPosition(400, 300, 0);
+	go->AddComponent<PhysicsComponent>();
 	go->AddComponent<dae::TextureComponent>()->SetTexture("Sprite1.png");
 	go->AddComponent<HealthComponent>(3)->AddObserver(healthText->GetComponent<HealthObserver>());
 	go->AddComponent<ScoreComponent>(0)->AddObserver(scoreText->GetComponent<ScoreObserver>());
