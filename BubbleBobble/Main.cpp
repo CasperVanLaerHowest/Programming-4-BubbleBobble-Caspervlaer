@@ -21,6 +21,7 @@
 #include "Components/HealthComponent.h"
 #include "Components/ScoreComponent.h"
 #include "Components/PhysicsComponent.h"
+#include "Components/CollisionComponent.h"
 
 #include "Commands/MoveCommand.h"
 #include "Commands/TakeDamageCommand.h"
@@ -79,6 +80,7 @@ static void load()
 	go = std::make_unique<dae::GameObject>();
 	go->GetComponent<dae::TransformComponent>()->SetLocalPosition(400, 300, 0);
 	go->AddComponent<PhysicsComponent>();
+	go->AddComponent<CollisionComponent>(glm::vec2{ 20, 20 }, glm::vec2{ -10, -10 });
 	go->AddComponent<dae::TextureComponent>()->SetTexture("Sprite1.png");
 	go->AddComponent<HealthComponent>(3)->AddObserver(healthText->GetComponent<HealthObserver>());
 	go->AddComponent<ScoreComponent>(0)->AddObserver(scoreText->GetComponent<ScoreObserver>());
@@ -94,6 +96,14 @@ static void load()
 	scene.Add(std::move(go));
 	scene.Add(std::move(healthText));
 	scene.Add(std::move(scoreText));
+
+	go = std::make_unique<dae::GameObject>();
+	go->GetComponent<dae::TransformComponent>()->SetLocalPosition(400, 400, 0);
+	//go->AddComponent<PhysicsComponent>();
+	go->AddComponent<CollisionComponent>(glm::vec2{ 10, 10 }, glm::vec2{ -5, -5 });
+	go->AddComponent<dae::TextureComponent>()->SetTexture("FakeFloor.png");
+
+	scene.Add(std::move(go));
 
 	healthText = std::make_unique<dae::GameObject>();
 	healthText->AddComponent<dae::TextComponent>("Health: 3", font2);

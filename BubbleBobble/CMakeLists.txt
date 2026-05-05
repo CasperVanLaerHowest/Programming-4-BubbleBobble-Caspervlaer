@@ -33,7 +33,7 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   Observers/SteamWinObserver.cpp
   Observers/SteamWinObserver.h
   Components/PhysicsComponent.h
-  Components/PhysicsComponent.cpp)
+  Components/PhysicsComponent.cpp "Components/CollisionComponent.h" "Components/CollisionComponent.cpp")
 
 target_compile_features(${TARGET_NAME} PUBLIC cxx_std_20)
 
