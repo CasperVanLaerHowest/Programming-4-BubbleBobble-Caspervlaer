@@ -28,7 +28,7 @@ namespace dae
 		template<std::derived_from<Component> T, typename... Args>
 		T* AddComponent(Args&&... args)
 		{
-			constexpr ComponentTypeID id{ T::StaticTypeID };
+			const ComponentTypeID id{ GetTypeID<T>() };
 
 			if (m_components[id] != nullptr) {
 				return static_cast<T*>(m_components[id].get());
@@ -44,7 +44,7 @@ namespace dae
 		template<std::derived_from<Component> T>
 		void RemoveComponent()
 		{
-			constexpr ComponentTypeID id{ T::StaticTypeID };
+			const ComponentTypeID id{ GetTypeID<T>() };
 
 			if(m_components[id] == nullptr) {
 				return;

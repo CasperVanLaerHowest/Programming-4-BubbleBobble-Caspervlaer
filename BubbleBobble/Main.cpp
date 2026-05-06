@@ -22,6 +22,8 @@
 #include "Components/ScoreComponent.h"
 #include "Components/PhysicsComponent.h"
 #include "Components/CollisionComponent.h"
+#include "Components/AnimationComponent.h"
+#include "Components/PlayerStateComponent.h"
 
 #include "Commands/MoveCommand.h"
 #include "Commands/TakeDamageCommand.h"
@@ -81,7 +83,16 @@ static void load()
 	go->GetComponent<dae::TransformComponent>()->SetLocalPosition(400, 300, 0);
 	go->AddComponent<PhysicsComponent>();
 	go->AddComponent<CollisionComponent>(glm::vec2{ 20, 20 }, glm::vec2{ -10, -10 });
-	go->AddComponent<dae::TextureComponent>()->SetTexture("Sprite1.png");
+	//go->AddComponent<dae::TextureComponent>()->SetTexture("Sprite1.png");
+	
+
+	std::vector<std::shared_ptr<dae::Texture2D>> idleFrames = {
+	dae::ResourceManager::GetInstance().LoadTexture("PlayerIdle0.png"),
+	dae::ResourceManager::GetInstance().LoadTexture("PlayerIdle1.png")
+	};
+
+	go->AddComponent<AnimationComponent>()->AddAnimation("idle", idleFrames, 0.5f, true);
+	go->AddComponent<PlayerStateComponent>();
 	go->AddComponent<HealthComponent>(3)->AddObserver(healthText->GetComponent<HealthObserver>());
 	go->AddComponent<ScoreComponent>(0)->AddObserver(scoreText->GetComponent<ScoreObserver>());
 	go->GetComponent<ScoreComponent>()->AddObserver(scoreText->GetComponent<SteamWinObserver>());

@@ -6,7 +6,7 @@
 class PlayerStateComponent : public dae::Component
 {
 	public:
-	static constexpr dae::ComponentTypeID StaticTypeID{ 14 };
+	static constexpr dae::ComponentTypeID StaticTypeID{ 15 };
 	PlayerStateComponent(dae::GameObject* owner);
 	virtual ~PlayerStateComponent() = default;
 	void FixedUpdate(float) override {};

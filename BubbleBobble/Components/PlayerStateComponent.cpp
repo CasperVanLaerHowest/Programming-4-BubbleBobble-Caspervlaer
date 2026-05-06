@@ -4,7 +4,7 @@
 PlayerStateComponent::PlayerStateComponent(dae::GameObject* owner)
 	: Component(owner)
 {
-	ChangeState(std::make_unique<IdleState>());
+	ChangeState(std::make_unique<IdleState>(owner));
 }
 
 void PlayerStateComponent::Update(float deltaTime)

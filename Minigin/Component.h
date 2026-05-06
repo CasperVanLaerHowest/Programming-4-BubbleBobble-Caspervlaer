@@ -4,6 +4,19 @@
 namespace dae
 {
 	using ComponentTypeID = uint32_t;
+
+	inline ComponentTypeID GetNextTypeID() noexcept
+	{
+		static ComponentTypeID lastID{ 0 };
+		return lastID++;
+	}
+
+	template <typename T>
+	inline ComponentTypeID GetTypeID() noexcept
+	{
+		static const ComponentTypeID typeID{ GetNextTypeID() };
+		return typeID;
+	}
 	class GameObject;
 
 	class Component
