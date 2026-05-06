@@ -43,11 +43,18 @@
 	void AnimationComponent::Render() const
 	{
 		auto currentTexture = GetCurrentTexture();
-		if (!currentTexture) return;
+		if (!currentTexture)
+			return;
 
-		const auto& pos = GetOwner()->GetComponent<dae::TransformComponent>()->GetWorldPosition();
+		auto* transform = GetOwner()->GetComponent<dae::TransformComponent>();
+		const auto& pos = transform->GetWorldPosition();
+		const auto& scale = transform->GetScale();
 
-		dae::Renderer::GetInstance().RenderTexture(*currentTexture, pos.x, pos.y);
+		const auto size = currentTexture->GetSize();
+		const float width = size.x * scale.x;
+		const float height = size.y * scale.y;
+
+		dae::Renderer::GetInstance().RenderTexture(*currentTexture, pos.x, pos.y, width, height);
 	}
 
 	void AnimationComponent::AddAnimation(const std::string& name, const std::vector<std::shared_ptr<Texture2D>>& frames, float frameDuration, bool loop)

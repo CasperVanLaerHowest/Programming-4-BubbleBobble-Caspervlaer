@@ -6,8 +6,6 @@
 class CollisionComponent : public dae::Component
 {
 public:
-	static constexpr dae::ComponentTypeID StaticTypeID{ 13 };
-
 	CollisionComponent(dae::GameObject* owner, const glm::vec2& size, const glm::vec2& offset = glm::vec2{ 0.f, 0.f });
 	virtual ~CollisionComponent();
 	void FixedUpdate(float) override {};

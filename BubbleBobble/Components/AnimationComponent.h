@@ -18,8 +18,6 @@ struct AnimationCnc
 class AnimationComponent final : public dae::Component
 {
 public:
-	static constexpr dae::ComponentTypeID StaticTypeID{ 14 };
-
 	AnimationComponent(dae::GameObject* owner);
 	virtual ~AnimationComponent() = default;
 	AnimationComponent(const AnimationComponent& other) = delete;

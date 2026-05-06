@@ -7,8 +7,6 @@ namespace dae
 	class TransformComponent final : public Component
 	{
 	public:
-		static constexpr ComponentTypeID StaticTypeID{ 0 };
-
 		TransformComponent(GameObject* owner);
 		virtual ~TransformComponent() = default;
 		TransformComponent(const TransformComponent& other) = delete;

@@ -9,8 +9,6 @@ namespace dae
 	class RenderComponent : public Component
 	{
 	public:
-		static constexpr ComponentTypeID StaticTypeID{ 3 };
-
 		explicit RenderComponent(GameObject* owner)
 			: Component(owner)
 		{

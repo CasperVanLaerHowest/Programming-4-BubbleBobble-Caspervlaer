@@ -81,6 +81,7 @@ static void load()
 
 	go = std::make_unique<dae::GameObject>();
 	go->GetComponent<dae::TransformComponent>()->SetLocalPosition(400, 300, 0);
+	go->GetComponent<dae::TransformComponent>()->SetScale(2, 2, 1);
 	go->AddComponent<PhysicsComponent>();
 	go->AddComponent<CollisionComponent>(glm::vec2{ 20, 20 }, glm::vec2{ -10, -10 });
 	//go->AddComponent<dae::TextureComponent>()->SetTexture("Sprite1.png");
@@ -91,7 +92,32 @@ static void load()
 	dae::ResourceManager::GetInstance().LoadTexture("PlayerIdle1.png")
 	};
 
-	go->AddComponent<AnimationComponent>()->AddAnimation("idle", idleFrames, 0.5f, true);
+	std::vector<std::shared_ptr<dae::Texture2D>> dieFrames = {
+	dae::ResourceManager::GetInstance().LoadTexture("PlayerDie0.png"),
+	dae::ResourceManager::GetInstance().LoadTexture("PlayerDie1.png"),
+	dae::ResourceManager::GetInstance().LoadTexture("PlayerDie2.png")
+	};
+
+	std::vector<std::shared_ptr<dae::Texture2D>> shootFrames = {
+	dae::ResourceManager::GetInstance().LoadTexture("PlayerShoot0.png"),
+	dae::ResourceManager::GetInstance().LoadTexture("PlayerShoot1.png"),
+	dae::ResourceManager::GetInstance().LoadTexture("PlayerShoot2.png"),
+	dae::ResourceManager::GetInstance().LoadTexture("PlayerShoot3.png")
+	};
+
+	std::vector<std::shared_ptr<dae::Texture2D>> walkFrames = {
+	dae::ResourceManager::GetInstance().LoadTexture("PlayerWalk0.png"),
+	dae::ResourceManager::GetInstance().LoadTexture("PlayerWalk2.png"),
+	dae::ResourceManager::GetInstance().LoadTexture("PlayerWalk1.png"),
+	dae::ResourceManager::GetInstance().LoadTexture("PlayerWalk3.png")
+	};
+
+	auto animationComp = go->AddComponent<AnimationComponent>();
+	animationComp->AddAnimation("Idle", idleFrames, 0.5f, true);
+	animationComp->AddAnimation("Die", dieFrames, 0.3f, false);
+	animationComp->AddAnimation("Shoot", shootFrames, 0.2f, false);
+	animationComp->AddAnimation("Walk", walkFrames, 0.2f, true);
+
 	go->AddComponent<PlayerStateComponent>();
 	go->AddComponent<HealthComponent>(3)->AddObserver(healthText->GetComponent<HealthObserver>());
 	go->AddComponent<ScoreComponent>(0)->AddObserver(scoreText->GetComponent<ScoreObserver>());

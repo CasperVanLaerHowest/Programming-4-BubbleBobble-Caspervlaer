@@ -6,8 +6,6 @@ namespace dae
 	class FPSComponent final : public Component
 	{
 	public:
-		static constexpr ComponentTypeID StaticTypeID{ 4 };
-
 		explicit FPSComponent(GameObject* owner)
 			: Component(owner)
 		{

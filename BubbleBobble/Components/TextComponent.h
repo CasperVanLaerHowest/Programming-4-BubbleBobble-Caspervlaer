@@ -11,8 +11,6 @@ namespace dae
 	class TextComponent final : public RenderComponent
 	{
 	public:
-		static constexpr ComponentTypeID StaticTypeID{ 1 };
-
 		TextComponent(GameObject* owner, const std::string& text, std::shared_ptr<Font> font, const SDL_Color& color = { 255, 255, 255, 255 });
 
 		virtual ~TextComponent() = default;

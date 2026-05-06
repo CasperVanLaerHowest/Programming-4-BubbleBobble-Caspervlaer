@@ -6,8 +6,6 @@ namespace dae
 	class RotatorComponent final : public Component
 	{
 	public:
-		static constexpr ComponentTypeID StaticTypeID{ 5 };
-
 		explicit RotatorComponent(GameObject* owner, float radius = 50.f, float rotationSpeed = 90.f)
 			: Component(owner)
 			, m_Radius(radius)

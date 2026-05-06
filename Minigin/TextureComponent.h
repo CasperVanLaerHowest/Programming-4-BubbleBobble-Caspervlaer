@@ -9,8 +9,6 @@ namespace dae
 	class TextureComponent final : public RenderComponent
 	{
 	public:
-		static constexpr ComponentTypeID StaticTypeID{ 2 };
-
 		explicit TextureComponent(GameObject* owner)
 			: RenderComponent(owner)
 		{

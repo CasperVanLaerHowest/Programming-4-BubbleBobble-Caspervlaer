@@ -5,8 +5,6 @@
 class PhysicsComponent : public dae::Component
 {
 public:
-	static constexpr dae::ComponentTypeID StaticTypeID{ 11 };
-
 	PhysicsComponent(dae::GameObject* owner);
 	virtual ~PhysicsComponent() = default;
 	void FixedUpdate(float) override {};

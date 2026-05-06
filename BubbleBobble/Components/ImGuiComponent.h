@@ -6,7 +6,6 @@ namespace dae
 	class ImGuiComponent final : public Component
 	{
 	public:
-		static constexpr ComponentTypeID StaticTypeID{ 12 };
 		explicit ImGuiComponent(GameObject* owner)
 			: Component(owner)
 		{

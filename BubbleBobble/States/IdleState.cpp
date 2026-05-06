@@ -4,5 +4,5 @@
 
 void IdleState::Enter()
 {
-	m_pOwner->GetComponent<AnimationComponent>()->PlayAnimation("idle");
+	m_pOwner->GetComponent<AnimationComponent>()->PlayAnimation("Idle");
 }

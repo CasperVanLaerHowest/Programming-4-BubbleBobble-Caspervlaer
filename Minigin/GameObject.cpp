@@ -36,11 +36,15 @@ void dae::GameObject::Render() const
 	// Render texture if available
 	const auto& transformComponent = GetComponent<TransformComponent>();
 	const auto& pos = transformComponent->GetWorldPosition();
+	const auto& scale = transformComponent->GetScale();
 	const auto& renderComponent = GetComponent<RenderComponent>();
 	Texture2D* texture = renderComponent ? renderComponent->GetTexture() : nullptr;
 	if (texture)
 	{
-		Renderer::GetInstance().RenderTexture(*texture, pos.x, pos.y);
+		const auto size = texture->GetSize();
+		const float width = size.x * scale.x;
+		const float height = size.y * scale.y;
+		Renderer::GetInstance().RenderTexture(*texture, pos.x, pos.y, width, height);
 	}
 
 	// Call Render() on all components (including ImGuiComponent)

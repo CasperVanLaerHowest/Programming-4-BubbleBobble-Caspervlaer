@@ -7,8 +7,6 @@ class HealthComponent :
 	public dae::Subject
 {
 public:
-	static constexpr dae::ComponentTypeID StaticTypeID{ 7 };
-
 	HealthComponent(dae::GameObject* owner, int health);
 	virtual ~HealthComponent() = default;
 	void FixedUpdate(float) override {};

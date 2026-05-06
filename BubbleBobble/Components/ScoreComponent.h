@@ -7,9 +7,7 @@ class ScoreComponent final :
     public dae::Subject
 {
 public:
-    static constexpr dae::ComponentTypeID StaticTypeID{ 8 };
-
-	ScoreComponent(dae::GameObject* owner, int score = 0);
+    ScoreComponent(dae::GameObject* owner, int score = 0);
     virtual ~ScoreComponent() = default;
 
 	void Update(float /*deltaTime*/) override {};
