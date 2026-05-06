@@ -6,8 +6,6 @@ class HealthObserver :
 	public dae::Observer  
 {  
 public:  
-    static constexpr dae::ComponentTypeID StaticTypeID{ 6 };
-
    HealthObserver(dae::GameObject* owner);  
    virtual ~HealthObserver() = default;  
 

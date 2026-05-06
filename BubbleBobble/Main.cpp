@@ -83,7 +83,7 @@ static void load()
 	go->GetComponent<dae::TransformComponent>()->SetLocalPosition(400, 300, 0);
 	go->GetComponent<dae::TransformComponent>()->SetScale(2, 2, 1);
 	go->AddComponent<PhysicsComponent>();
-	go->AddComponent<CollisionComponent>(glm::vec2{ 20, 20 }, glm::vec2{ -10, -10 });
+	go->AddComponent<CollisionComponent>(glm::vec2{ 20, 20 }, glm::vec2{ 0.f, 0.f });
 	//go->AddComponent<dae::TextureComponent>()->SetTexture("Sprite1.png");
 	
 
@@ -136,7 +136,8 @@ static void load()
 
 	go = std::make_unique<dae::GameObject>();
 	go->GetComponent<dae::TransformComponent>()->SetLocalPosition(400, 400, 0);
-	go->AddComponent<CollisionComponent>(glm::vec2{ 10, 10 }, glm::vec2{ -5, -5 });
+	go->GetComponent<dae::TransformComponent>()->SetScale(2, 2, 1);
+	go->AddComponent<CollisionComponent>(glm::vec2{ 10, 10 }, glm::vec2{ 0.f, 0.f });
 	go->AddComponent<dae::TextureComponent>()->SetTexture("FakeFloor.png");
 
 	scene.Add(std::move(go));

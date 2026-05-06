@@ -14,8 +14,8 @@ public:
 
 	bool CheckCollision(const glm::vec2& predictedPos, const dae::GameObject* otherObject) const;
 
-	glm::vec2 GetSize() const { return m_Size; }
-	glm::vec2 GetOffset() const { return m_Offset; }
+	glm::vec2 GetSize() const;
+	glm::vec2 GetOffset() const;
 
 	static const std::vector<CollisionComponent*>& GetColliders() { return m_Colliders; }
 

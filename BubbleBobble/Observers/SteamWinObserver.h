@@ -7,9 +7,7 @@ class SteamWinObserver final :
     public dae::Observer
 {
 public:
-    static constexpr dae::ComponentTypeID StaticTypeID{ 10 };
-
-	SteamWinObserver(dae::GameObject* owner);
+    SteamWinObserver(dae::GameObject* owner);
     virtual ~SteamWinObserver() = default;
 
 	void OnNotify(dae::GameObject& entity, dae::Event event) override;
