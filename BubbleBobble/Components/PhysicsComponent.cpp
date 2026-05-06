@@ -2,6 +2,7 @@
 #include "TransformComponent.h"
 #include "CollisionComponent.h"
 #include "GameObject.h"
+#include <cmath>
 
 PhysicsComponent::PhysicsComponent(dae::GameObject* owner)
 	: Component(owner)
@@ -16,7 +17,28 @@ void PhysicsComponent::Update(float deltaTime)
 	if (transform)
 	{
 		auto pos = transform->GetLocalPosition();
-		m_Velocity.y += m_Gravity * deltaTime;
+
+		bool isGrounded = false;
+		if (collider)
+		{
+			glm::vec2 groundCheckPos = { pos.x, pos.y + 1.f };
+			for (auto otherCollider : CollisionComponent::GetColliders())
+			{
+				if (otherCollider == collider)
+					continue;
+
+				if (collider->CheckCollision(groundCheckPos, otherCollider->GetOwner()))
+				{
+					isGrounded = true;
+					break;
+				}
+			}
+		}
+
+		if (isGrounded && m_Velocity.y >= 0.f)
+			m_Velocity.y = 0.f;
+		else
+			m_Velocity.y += m_Gravity * deltaTime;
 
 		if (m_Velocity.y > m_MaxVerticalSpeed)
 			m_Velocity.y = m_MaxVerticalSpeed;
@@ -27,6 +49,27 @@ void PhysicsComponent::Update(float deltaTime)
 			m_Velocity.x = m_MaxHorizontalSpeed;
 		else if(m_Velocity.x < -m_MaxHorizontalSpeed)
 			m_Velocity.x = -m_MaxHorizontalSpeed;
+
+		const bool isNearGround = std::abs(m_Velocity.y) <= m_GroundVelocityEpsilon;
+		const float friction = isNearGround ? m_GroundFriction : m_AirFriction;
+		const float frictionDelta = friction * deltaTime;
+
+		if (isNearGround && std::abs(m_Velocity.x) <= m_GroundStopVelocity)
+		{
+			m_Velocity.x = 0.f;
+		}
+		else if (m_Velocity.x > 0.f)
+		{
+			m_Velocity.x -= frictionDelta;
+			if (m_Velocity.x < 0.f)
+				m_Velocity.x = 0.f;
+		}
+		else if (m_Velocity.x < 0.f)
+		{
+			m_Velocity.x += frictionDelta;
+			if (m_Velocity.x > 0.f)
+				m_Velocity.x = 0.f;
+		}
 
 		bool stopX = false;
 		bool stopY = false;

@@ -1,18 +1,16 @@
-#include <cmath>
-#include "Idlestate.h"
-#include "GameObject.h"
-#include "InputManager.h"
 #include "WalkState.h"
+#include "GameObject.h"
 #include "../Components/AnimationComponent.h"
 #include "../Components/PhysicsComponent.h"
 #include "../Components/PlayerStateComponent.h"
+#include "IdleState.h"
 
-void IdleState::Enter()
+void WalkState::Enter()
 {
-	m_pOwner->GetComponent<AnimationComponent>()->PlayAnimation("Idle");
+	m_pOwner->GetComponent<AnimationComponent>()->PlayAnimation("Walk");
 }
 
-void IdleState::Update(float)
+void WalkState::Update(float)
 {
 	auto* physics = m_pOwner->GetComponent<PhysicsComponent>();
 	if (physics == nullptr)
@@ -21,7 +19,7 @@ void IdleState::Update(float)
 	}
 
 	const auto& velocity = physics->GetVelocity();
-	if (std::abs(velocity.x) <= 0.01f)
+	if (std::abs(velocity.x) >= 0.01f)
 	{
 		return;
 	}
@@ -32,5 +30,5 @@ void IdleState::Update(float)
 		return;
 	}
 
-	stateComponent->ChangeState(std::make_unique<WalkState>(m_pOwner));
+	stateComponent->ChangeState(std::make_unique<IdleState>(m_pOwner));
 }

@@ -8,7 +8,7 @@ public:
 
 	virtual ~IdleState() = default;
 	void Enter() override;
-	void Update(float) override {}
+	void Update(float) override;
 	void HandleInput() override {}
 	void Exit() override {}
 };

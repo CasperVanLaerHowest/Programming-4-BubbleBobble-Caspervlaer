@@ -28,6 +28,7 @@
 #include "Commands/MoveCommand.h"
 #include "Commands/TakeDamageCommand.h"
 #include "Commands/AddScoreCommand.h"
+#include "Commands/JumpCommand.h"
 
 #include "Observers/HealthObserver.h"
 #include "Observers/ScoreObserver.h"
@@ -123,9 +124,12 @@ static void load()
 	go->AddComponent<ScoreComponent>(0)->AddObserver(scoreText->GetComponent<ScoreObserver>());
 	go->GetComponent<ScoreComponent>()->AddObserver(scoreText->GetComponent<SteamWinObserver>());
 
+	auto cmdjump = std::make_unique<JumpCommand>(go.get());
+	cmdjump->SetJumpStrength(400.f);
+
 	dae::InputManager::GetInstance().BindCommand(SDL_SCANCODE_A, std::make_unique<MoveCommand>(go.get(), glm::vec2{-1, 0}));
 	dae::InputManager::GetInstance().BindCommand(SDL_SCANCODE_D, std::make_unique<MoveCommand>(go.get(), glm::vec2{1, 0}));
-	dae::InputManager::GetInstance().BindCommand(SDL_SCANCODE_W, std::make_unique<MoveCommand>(go.get(), glm::vec2{0, -1}));
+	dae::InputManager::GetInstance().BindCommand(SDL_SCANCODE_W, std::move(cmdjump));
 	dae::InputManager::GetInstance().BindCommand(SDL_SCANCODE_S, std::make_unique<MoveCommand>(go.get(), glm::vec2{0, 1}));
 
 	dae::InputManager::GetInstance().BindCommand(SDL_SCANCODE_K, std::make_unique<TakeDamageCommand>(go.get()));
@@ -139,7 +143,30 @@ static void load()
 	go->GetComponent<dae::TransformComponent>()->SetScale(2, 2, 1);
 	go->AddComponent<CollisionComponent>(glm::vec2{ 10, 10 }, glm::vec2{ 0.f, 0.f });
 	go->AddComponent<dae::TextureComponent>()->SetTexture("FakeFloor.png");
-
+	scene.Add(std::move(go));
+	go = std::make_unique<dae::GameObject>();
+	go->GetComponent<dae::TransformComponent>()->SetLocalPosition(420, 400, 0);
+	go->GetComponent<dae::TransformComponent>()->SetScale(2, 2, 1);
+	go->AddComponent<CollisionComponent>(glm::vec2{ 10, 10 }, glm::vec2{ 0.f, 0.f });
+	go->AddComponent<dae::TextureComponent>()->SetTexture("FakeFloor.png");
+	scene.Add(std::move(go));
+	go = std::make_unique<dae::GameObject>();
+	go->GetComponent<dae::TransformComponent>()->SetLocalPosition(440, 400, 0);
+	go->GetComponent<dae::TransformComponent>()->SetScale(2, 2, 1);
+	go->AddComponent<CollisionComponent>(glm::vec2{ 10, 10 }, glm::vec2{ 0.f, 0.f });
+	go->AddComponent<dae::TextureComponent>()->SetTexture("FakeFloor.png");
+	scene.Add(std::move(go));
+	go = std::make_unique<dae::GameObject>();
+	go->GetComponent<dae::TransformComponent>()->SetLocalPosition(460, 400, 0);
+	go->GetComponent<dae::TransformComponent>()->SetScale(2, 2, 1);
+	go->AddComponent<CollisionComponent>(glm::vec2{ 10, 10 }, glm::vec2{ 0.f, 0.f });
+	go->AddComponent<dae::TextureComponent>()->SetTexture("FakeFloor.png");
+	scene.Add(std::move(go));
+	go = std::make_unique<dae::GameObject>();
+	go->GetComponent<dae::TransformComponent>()->SetLocalPosition(480, 400, 0);
+	go->GetComponent<dae::TransformComponent>()->SetScale(2, 2, 1);
+	go->AddComponent<CollisionComponent>(glm::vec2{ 10, 10 }, glm::vec2{ 0.f, 0.f });
+	go->AddComponent<dae::TextureComponent>()->SetTexture("FakeFloor.png");
 	scene.Add(std::move(go));
 
 	healthText = std::make_unique<dae::GameObject>();
