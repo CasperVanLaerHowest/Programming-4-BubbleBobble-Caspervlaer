@@ -1,4 +1,5 @@
 #pragma once
+#include <SDL3/SDL.h>
 #include "Component.h"
 #include <memory>
 #include "Texture2D.h"
@@ -21,5 +22,6 @@ namespace dae
 
 		// Make GetTexture virtual so derived classes can override it
 		virtual Texture2D* GetTexture() const { return nullptr; }
+		virtual SDL_FlipMode GetFlipMode() const { return SDL_FLIP_NONE; }
 	};
 }

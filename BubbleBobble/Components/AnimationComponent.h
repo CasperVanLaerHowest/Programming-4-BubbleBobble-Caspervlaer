@@ -34,6 +34,9 @@ public:
 
 	std::shared_ptr<Texture2D> GetCurrentTexture() const;
 
+	void SetFlipHorizontal(bool flip);
+	bool IsFlippedHorizontal() const;
+
 private:
 	std::unordered_map<std::string, AnimationCnc> m_Animations;
 
@@ -41,4 +44,5 @@ private:
 	int m_CurrentFrameIndex{ 0 };
 	float m_AccumulatedTime{ 0.f };
 	bool m_IsPlaying{ false };
+	bool m_FlipHorizontal{ false };
 };

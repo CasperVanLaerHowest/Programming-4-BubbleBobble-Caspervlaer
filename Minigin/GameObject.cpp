@@ -1,4 +1,5 @@
 #include <string>
+#include <SDL3/SDL.h>
 #include "GameObject.h"
 #include "ResourceManager.h"
 #include "Renderer.h"
@@ -44,7 +45,8 @@ void dae::GameObject::Render() const
 		const auto size = texture->GetSize();
 		const float width = size.x * scale.x;
 		const float height = size.y * scale.y;
-		Renderer::GetInstance().RenderTexture(*texture, pos.x, pos.y, width, height);
+		const SDL_FlipMode flipMode = renderComponent ? renderComponent->GetFlipMode() : SDL_FLIP_NONE;
+		Renderer::GetInstance().RenderTexture(*texture, pos.x, pos.y, width, height, flipMode);
 	}
 
 	// Call Render() on all components (including ImGuiComponent)

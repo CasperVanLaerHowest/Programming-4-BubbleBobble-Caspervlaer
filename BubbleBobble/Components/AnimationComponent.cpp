@@ -1,3 +1,4 @@
+#include <SDL3/SDL.h>
 #include "AnimationComponent.h"
 #include "GameObject.h"
 #include "TransformComponent.h"
@@ -54,7 +55,8 @@
 		const float width = size.x * scale.x;
 		const float height = size.y * scale.y;
 
-		dae::Renderer::GetInstance().RenderTexture(*currentTexture, pos.x, pos.y, width, height);
+		const SDL_FlipMode flipMode = m_FlipHorizontal ? SDL_FLIP_HORIZONTAL : SDL_FLIP_NONE;
+		dae::Renderer::GetInstance().RenderTexture(*currentTexture, pos.x, pos.y, width, height, flipMode);
 	}
 
 	void AnimationComponent::AddAnimation(const std::string& name, const std::vector<std::shared_ptr<Texture2D>>& frames, float frameDuration, bool loop)
@@ -88,4 +90,14 @@
 		}
 
 		return nullptr;
+	}
+
+	void AnimationComponent::SetFlipHorizontal(bool flip)
+	{
+		m_FlipHorizontal = flip;
+	}
+
+	bool AnimationComponent::IsFlippedHorizontal() const
+	{
+		return m_FlipHorizontal;
 	}
