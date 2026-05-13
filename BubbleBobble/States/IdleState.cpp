@@ -4,6 +4,7 @@
 #include "WalkState.h"
 #include "../Components/AnimationComponent.h"
 #include "../Components/PhysicsComponent.h"
+#include "../Components/PlayerFacingComponent.h"
 
 void IdleState::Enter()
 {
@@ -24,9 +25,15 @@ std::unique_ptr<BaseState> IdleState::Update(float)
 		return nullptr;
 	}
 
+	auto* facing = m_pOwner->GetComponent<PlayerFacingComponent>();
+	if (facing)
+	{
+		facing->SetFacingFromHorizontalMovement(velocity.x);
+	}
+
 	if (auto* animation = m_pOwner->GetComponent<AnimationComponent>())
 	{
-		animation->SetFlipHorizontal(velocity.x > 0.f);
+		animation->SetFlipHorizontal(facing && facing->IsFacingRight());
 	}
 
 	return std::make_unique<WalkState>(m_pOwner);

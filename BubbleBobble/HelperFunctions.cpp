@@ -2,6 +2,7 @@
 #include "Components/CollisionComponent.h"
 #include "Components/AnimationComponent.h"
 #include "Components/PlayerStateComponent.h"
+#include "Components/PlayerFacingComponent.h"
 #include "Components/PhysicsComponent.h"
 #include "Commands/MoveCommand.h"
 #include "Commands/JumpCommand.h"
@@ -17,6 +18,7 @@ void CreatePlayer(dae::Scene& scene) {
 	player->GetComponent<dae::TransformComponent>()->SetScale(2, 2, 1);
 	player->AddComponent<PhysicsComponent>();
 	player->AddComponent<CollisionComponent>(glm::vec2{ 20, 20 }, CollisionType::Player, glm::vec2{ 0.f, 0.f });
+	player->AddComponent<PlayerFacingComponent>();
 
 	std::vector<std::shared_ptr<dae::Texture2D>> idleFrames = {
 	dae::ResourceManager::GetInstance().LoadTexture("PlayerIdle0.png"),
