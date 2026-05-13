@@ -10,6 +10,7 @@
 #include <TransformComponent.h>
 #include <ResourceManager.h>
 #include <InputManager.h>
+#include "Commands/ShootBubbleCommand.h"
 
 
 void CreatePlayer(dae::Scene& scene) {
@@ -60,10 +61,12 @@ void CreatePlayer(dae::Scene& scene) {
 	auto cmdjump = std::make_unique<JumpCommand>(player.get());
 	cmdjump->SetJumpStrength(400.f);
 
+	auto cmdshoot = std::make_unique<ShootBubbleCommand>(player.get());
+
 	dae::InputManager::GetInstance().BindCommand(SDL_SCANCODE_A, std::make_unique<MoveCommand>(player.get(), glm::vec2{ -1, 0 }));
 	dae::InputManager::GetInstance().BindCommand(SDL_SCANCODE_D, std::make_unique<MoveCommand>(player.get(), glm::vec2{ 1, 0 }));
 	dae::InputManager::GetInstance().BindCommand(SDL_SCANCODE_W, std::move(cmdjump));
 	dae::InputManager::GetInstance().BindCommand(SDL_SCANCODE_S, std::make_unique<MoveCommand>(player.get(), glm::vec2{ 0, 1 }));
-
+	dae::InputManager::GetInstance().BindCommand(SDL_SCANCODE_SPACE, std::move(cmdshoot));
 	scene.Add(std::move(player));
 }
