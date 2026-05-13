@@ -43,7 +43,11 @@ void TileLoader(std::string& texture, glm::vec2& position, glm::vec2& scale, dae
 	auto go {std::make_unique<dae::GameObject>()};
 	go->GetComponent<dae::TransformComponent>()->SetLocalPosition(position.x, position.y, 0);
 	go->GetComponent<dae::TransformComponent>()->SetScale(scale.x, scale.y, 1);
-	go->AddComponent<CollisionComponent>(glm::vec2{ 10, 10 }, glm::vec2{ 0.f, 0.f });
+	go->AddComponent<CollisionComponent>(
+		glm::vec2{ 10, 10 },
+		CollisionType::Solid,
+		glm::vec2{ 0.f, 0.f }
+	);
 	go->AddComponent<dae::TextureComponent>()->SetTexture(texture);
 	scene.Add(std::move(go));
 }

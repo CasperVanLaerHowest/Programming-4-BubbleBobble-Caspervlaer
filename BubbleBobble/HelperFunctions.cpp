@@ -16,7 +16,7 @@ void CreatePlayer(dae::Scene& scene) {
 	player->GetComponent<dae::TransformComponent>()->SetLocalPosition(400, 300, 0);
 	player->GetComponent<dae::TransformComponent>()->SetScale(2, 2, 1);
 	player->AddComponent<PhysicsComponent>();
-	player->AddComponent<CollisionComponent>(glm::vec2{ 20, 20 }, glm::vec2{ 0.f, 0.f });
+	player->AddComponent<CollisionComponent>(glm::vec2{ 20, 20 }, CollisionType::Player, glm::vec2{ 0.f, 0.f });
 
 	std::vector<std::shared_ptr<dae::Texture2D>> idleFrames = {
 	dae::ResourceManager::GetInstance().LoadTexture("PlayerIdle0.png"),

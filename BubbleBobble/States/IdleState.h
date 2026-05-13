@@ -8,7 +8,7 @@ public:
 
 	virtual ~IdleState() = default;
 	void Enter() override;
-	void Update(float) override;
+	std::unique_ptr<BaseState> Update(float) override;
 	void HandleInput() override {}
 	void Exit() override {}
 };

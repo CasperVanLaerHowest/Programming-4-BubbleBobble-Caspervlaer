@@ -6,8 +6,8 @@
 #include "GameObject.h"
 #include "Texture2D.h"
 
-CollisionComponent::CollisionComponent(dae::GameObject* owner, const glm::vec2& size, const glm::vec2& offset)
-	: Component(owner), m_Size(size), m_Offset(offset)
+CollisionComponent::CollisionComponent(dae::GameObject* owner, const glm::vec2& size,const CollisionType& collisionType, const glm::vec2& offset)
+	: Component(owner), m_Size(size), m_CollisionType(collisionType), m_Offset(offset)
 {
 	m_Colliders.push_back(this);
 }

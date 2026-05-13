@@ -10,7 +10,13 @@ PlayerStateComponent::PlayerStateComponent(dae::GameObject* owner)
 void PlayerStateComponent::Update(float deltaTime)
 {
 	if (m_pCurrentState)
-		m_pCurrentState->Update(deltaTime);
+	{
+		auto newState = m_pCurrentState->Update(deltaTime);
+		if (newState)
+		{
+			ChangeState(std::move(newState));
+		}
+	}
 }
 
 void PlayerStateComponent::ChangeState(std::unique_ptr<BaseState> newState)

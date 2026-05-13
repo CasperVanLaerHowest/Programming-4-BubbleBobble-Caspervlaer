@@ -69,6 +69,14 @@ void PhysicsComponent::Update(float deltaTime)
 				if (otherCollider == collider)
 					continue; 
 
+				const auto otherType = otherCollider->GetCollisionType();
+
+				if (otherType != CollisionType::Platform &&
+					otherType != CollisionType::Solid)
+				{
+					continue;
+				}
+
 				if (collider->CheckCollision(predictedPosX, otherCollider->GetOwner()))
 					stopX = true;
 
@@ -99,6 +107,14 @@ bool PhysicsComponent::IsGrounded() const
 
 	for (auto otherCollider : CollisionComponent::GetColliders())
 	{
+		const auto otherType = otherCollider->GetCollisionType();
+
+		if (otherType != CollisionType::Platform &&
+			otherType != CollisionType::Solid)
+		{
+			continue;
+		}
+
 		if (otherCollider == collider)
 			continue;
 
