@@ -16,6 +16,8 @@ public:
 	void SetGravity(float gravity) { m_Gravity = gravity; }
 	void ResetGravity() { m_Gravity = 300.f; }
 
+	bool IsGrounded() const;
+
 private:
 	glm::vec2 m_Velocity{ 0.f, 0.f };
 	float m_Gravity{ 500.f };

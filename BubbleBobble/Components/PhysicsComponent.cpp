@@ -18,23 +18,8 @@ void PhysicsComponent::Update(float deltaTime)
 	{
 		auto pos = transform->GetLocalPosition();
 
-		bool isGrounded = false;
-		if (collider)
-		{
-			glm::vec2 groundCheckPos = { pos.x, pos.y + 1.f };
-			for (auto otherCollider : CollisionComponent::GetColliders())
-			{
-				if (otherCollider == collider)
-					continue;
-
-				if (collider->CheckCollision(groundCheckPos, otherCollider->GetOwner()))
-				{
-					isGrounded = true;
-					break;
-				}
-			}
-		}
-
+		const bool isGrounded = IsGrounded();
+		
 		if (isGrounded && m_Velocity.y >= 0.f)
 			m_Velocity.y = 0.f;
 		else
@@ -99,4 +84,27 @@ void PhysicsComponent::Update(float deltaTime)
 									pos.y + (m_Velocity.y * deltaTime),
 									pos.z);
 	}
+}
+
+bool PhysicsComponent::IsGrounded() const
+{
+	auto transform = GetOwner()->GetComponent<dae::TransformComponent>();
+	auto collider = GetOwner()->GetComponent<CollisionComponent>();
+
+	if (!transform || !collider)
+		return false;
+
+	auto pos = transform->GetLocalPosition();
+	glm::vec2 groundCheckPos = { pos.x, pos.y + 1.f };
+
+	for (auto otherCollider : CollisionComponent::GetColliders())
+	{
+		if (otherCollider == collider)
+			continue;
+
+		if (collider->CheckCollision(groundCheckPos, otherCollider->GetOwner()))
+			return true;
+	}
+
+	return false;
 }

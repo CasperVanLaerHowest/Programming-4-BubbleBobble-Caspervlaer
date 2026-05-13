@@ -11,11 +11,8 @@ JumpCommand::JumpCommand(dae::GameObject* pGameObject, float jumpStrength)
 void JumpCommand::Execute(bool notfirstExecute)
 {
 	auto physics = m_pGameObject->GetComponent<PhysicsComponent>();
-	if (physics)
+	if (physics && physics->IsGrounded() && !notfirstExecute)
 	{
-		if (!notfirstExecute)
-		{
-			physics->AddVelocity({ 0.f, -m_JumpStrength });
-		}
+		physics->AddVelocity({ 0.f, -m_JumpStrength });
 	}
 }
