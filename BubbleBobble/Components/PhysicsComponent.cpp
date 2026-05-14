@@ -1,6 +1,7 @@
 #include "PhysicsComponent.h"
 #include "TransformComponent.h"
 #include "CollisionComponent.h"
+#include "BubbleComponent.h"
 #include "../HelperFunctions/CollisionRules.h"
 #include "GameObject.h"
 #include <cmath>
@@ -18,6 +19,9 @@ void PhysicsComponent::Update(float deltaTime)
 	if (transform)
 	{
 		auto pos = transform->GetLocalPosition();
+
+		if (auto bubble = GetOwner()->GetComponent<BubbleComponent>())
+			bubble->PrepareMovement();
 
 		SetCorrectVelocity(deltaTime);
 
@@ -113,9 +117,35 @@ void PhysicsComponent::CollisionCheck(float deltaTime,  glm::vec3 pos, Collision
 
 			if (CollisionRules::ShouldBlockY(collider, otherCollider, { pos.x, pos.y }, predictedPosY, m_Velocity.y))
 				stopY = true;
+
+			HandleBubbleInteraction(collider, otherCollider, { pos.x, pos.y }, predictedPosX, predictedPosY);
 		}
 	}
 
 	if (stopX) m_Velocity.x = 0;
 	if (stopY) m_Velocity.y = 0;
+}
+
+void PhysicsComponent::HandleBubbleInteraction(
+	CollisionComponent* collider,
+	CollisionComponent* otherCollider,
+	const glm::vec2& currentPosition,
+	const glm::vec2& predictedPosX,
+	const glm::vec2& predictedPosY)
+{
+	if (CollisionRules::ShouldBounceOnBubble(collider, otherCollider, currentPosition, predictedPosY, m_Velocity.y))
+	{
+		if (auto bubble = otherCollider->GetOwner()->GetComponent<BubbleComponent>())
+			m_Velocity.y = -bubble->GetBounceVelocity();
+	}
+
+	if (!CollisionRules::ShouldPushBubble(collider, otherCollider, predictedPosX, m_Velocity.x))
+		return;
+
+	auto bubble = otherCollider->GetOwner()->GetComponent<BubbleComponent>();
+	if (!bubble || !bubble->IsFloatingUp())
+		return;
+
+	const float pushDirection = m_Velocity.x > 0.f ? 1.f : -1.f;
+	bubble->PushSideways(pushDirection);
 }

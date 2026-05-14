@@ -26,10 +26,29 @@ public:
 		const glm::vec2& currentPosition,
 		const glm::vec2& groundCheckPosition);
 
+	static bool ShouldBounceOnBubble(
+		const CollisionComponent* collider,
+		const CollisionComponent* otherCollider,
+		const glm::vec2& currentPosition,
+		const glm::vec2& predictedPosition,
+		float verticalVelocity);
+
+	static bool ShouldPushBubble(
+		const CollisionComponent* collider,
+		const CollisionComponent* otherCollider,
+		const glm::vec2& predictedPosition,
+		float horizontalVelocity);
+
 private:
 	static bool IsMovingOntoPlatform(
 		const CollisionComponent* collider,
 		const CollisionComponent* platform,
+		const glm::vec2& currentPosition,
+		float verticalVelocity);
+
+	static bool IsMovingOntoCollider(
+		const CollisionComponent* collider,
+		const CollisionComponent* otherCollider,
 		const glm::vec2& currentPosition,
 		float verticalVelocity);
 

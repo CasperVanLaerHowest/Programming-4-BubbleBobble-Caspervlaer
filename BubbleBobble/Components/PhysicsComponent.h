@@ -37,4 +37,5 @@ private:
 
 	void SetCorrectVelocity(float deltaTime);
 	void CollisionCheck(float deltaTime, glm::vec3 pos, CollisionComponent* collider);
+	void HandleBubbleInteraction(CollisionComponent* collider, CollisionComponent* otherCollider, const glm::vec2& currentPosition, const glm::vec2& predictedPosX, const glm::vec2& predictedPosY);
 };

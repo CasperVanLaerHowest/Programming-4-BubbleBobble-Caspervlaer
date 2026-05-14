@@ -39,6 +39,41 @@ void BubbleComponent::Update(float deltaTime)
 	}
 }
 
+void BubbleComponent::PrepareMovement()
+{
+	if (!m_IsFloatingUp)
+		return;
+
+	auto physics = GetOwner()->GetComponent<PhysicsComponent>();
+	if (!physics)
+		return;
+
+	auto velocity = physics->GetVelocity();
+	velocity.y = -m_FloatSpeed;
+
+	if (!m_WasPushedThisFrame)
+		velocity.x = 0.f;
+
+	physics->SetVelocity(velocity);
+	m_WasPushedThisFrame = false;
+}
+
+void BubbleComponent::PushSideways(float direction)
+{
+	if (!m_IsFloatingUp)
+		return;
+
+	auto physics = GetOwner()->GetComponent<PhysicsComponent>();
+	if (!physics)
+		return;
+
+	auto velocity = physics->GetVelocity();
+	velocity.x = direction * m_PushVelocity;
+	velocity.y = -m_FloatSpeed;
+	physics->SetVelocity(velocity);
+	m_WasPushedThisFrame = true;
+}
+
 void BubbleComponent::StartMovingForward() const
 {
 	auto physics = GetOwner()->GetComponent<PhysicsComponent>();
@@ -56,5 +91,5 @@ void BubbleComponent::StartFloatingUp() const
 	if (!physics)
 		return;
 
-	physics->SetVelocity({ 0.f, -m_Speed * 0.3f });
+	physics->SetVelocity({ 0.f, -m_FloatSpeed });
 }

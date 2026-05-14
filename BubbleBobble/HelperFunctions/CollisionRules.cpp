@@ -84,6 +84,39 @@ bool CollisionRules::IsGround(
 		IsMovingOntoPlatform(collider, otherCollider, currentPosition, 1.f);
 }
 
+bool CollisionRules::ShouldBounceOnBubble(
+	const CollisionComponent* collider,
+	const CollisionComponent* otherCollider,
+	const glm::vec2& currentPosition,
+	const glm::vec2& predictedPosition,
+	float verticalVelocity)
+{
+	if (collider->GetCollisionType() != CollisionType::Player ||
+		otherCollider->GetCollisionType() != CollisionType::Bubble)
+	{
+		return false;
+	}
+
+	return collider->CheckCollision(predictedPosition, otherCollider->GetOwner()) &&
+		IsMovingOntoCollider(collider, otherCollider, currentPosition, verticalVelocity);
+}
+
+bool CollisionRules::ShouldPushBubble(
+	const CollisionComponent* collider,
+	const CollisionComponent* otherCollider,
+	const glm::vec2& predictedPosition,
+	float horizontalVelocity)
+{
+	if (horizontalVelocity == 0.f ||
+		collider->GetCollisionType() != CollisionType::Player ||
+		otherCollider->GetCollisionType() != CollisionType::Bubble)
+	{
+		return false;
+	}
+
+	return collider->CheckCollision(predictedPosition, otherCollider->GetOwner());
+}
+
 bool CollisionRules::IsMovingOntoPlatform(
 	const CollisionComponent* collider,
 	const CollisionComponent* platform,
@@ -97,6 +130,21 @@ bool CollisionRules::IsMovingOntoPlatform(
 	const auto platformTop = GetColliderPosition(platform).y;
 
 	return colliderBottom <= platformTop + 1.f;
+}
+
+bool CollisionRules::IsMovingOntoCollider(
+	const CollisionComponent* collider,
+	const CollisionComponent* otherCollider,
+	const glm::vec2& currentPosition,
+	float verticalVelocity)
+{
+	if (verticalVelocity <= 0.f)
+		return false;
+
+	const auto colliderBottom = currentPosition.y + collider->GetOffset().y + collider->GetSize().y;
+	const auto otherTop = GetColliderPosition(otherCollider).y;
+
+	return colliderBottom <= otherTop + 1.f;
 }
 
 bool CollisionRules::IsOverlappingAnyPlatform(
