@@ -11,7 +11,7 @@
 #include <ResourceManager.h>
 #include <InputManager.h>
 #include "../Commands/ShootBubbleCommand.h"
-#include "../Components/BubbleComponent.h"
+#include "../Components/BubbleStateComponent.h"
 
 
 
@@ -91,7 +91,7 @@ void SpawnBubble(dae::Scene& scene, const glm::vec2& spawnPos, bool facingRight)
 	bubble->GetComponent<AnimationComponent>()->PlayAnimation("Bubble");
 	bubble->AddComponent<FacingComponent>()->SetFacingDirection(facingRight ? FacingDirection::Right : FacingDirection::Left);
 	bubble->AddComponent<PhysicsComponent>();
-	bubble->AddComponent<BubbleComponent>();
+	bubble->AddComponent<BubbleStateComponent>()->Start();
 	bubble->AddComponent<CollisionComponent>(
 		glm::vec2{ 16.f, 16.f },
 		CollisionType::Bubble

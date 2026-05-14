@@ -54,7 +54,18 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   "HelperFunctions/GameObjectFactory.h" 
   "HelperFunctions/GameObjectFactory.cpp" 
   "Commands/ShootBubbleCommand.h" 
-  "Commands/ShootBubbleCommand.cpp"   "Components/BubbleComponent.h" "Components/BubbleComponent.cpp")
+  "Commands/ShootBubbleCommand.cpp"
+  "Components/BubbleStateComponent.h"
+  "Components/BubbleStateComponent.cpp"
+  "States/BubbleBaseState.h"
+  "States/BubbleShotState.h"
+  "States/BubbleShotState.cpp"
+  "States/BubbleDriftState.h"
+  "States/BubbleDriftState.cpp"
+  "States/BubblePopState.h"
+  "States/BubblePopState.cpp"
+  "States/BubbleTrappedState.h"
+  "States/BubbleTrappedState.cpp")
 
 target_compile_features(${TARGET_NAME} PUBLIC cxx_std_20)
 

@@ -1,7 +1,7 @@
 #include "PhysicsComponent.h"
 #include "TransformComponent.h"
 #include "CollisionComponent.h"
-#include "BubbleComponent.h"
+#include "BubbleStateComponent.h"
 #include "../HelperFunctions/CollisionRules.h"
 #include "GameObject.h"
 #include <cmath>
@@ -20,7 +20,7 @@ void PhysicsComponent::Update(float deltaTime)
 	{
 		auto pos = transform->GetLocalPosition();
 
-		if (auto bubble = GetOwner()->GetComponent<BubbleComponent>())
+		if (auto bubble = GetOwner()->GetComponent<BubbleStateComponent>())
 			bubble->PrepareMovement();
 
 		SetCorrectVelocity(deltaTime);
@@ -135,14 +135,14 @@ void PhysicsComponent::HandleBubbleInteraction(
 {
 	if (CollisionRules::ShouldBounceOnBubble(collider, otherCollider, currentPosition, predictedPosY, m_Velocity.y))
 	{
-		if (auto bubble = otherCollider->GetOwner()->GetComponent<BubbleComponent>())
+		if (auto bubble = otherCollider->GetOwner()->GetComponent<BubbleStateComponent>())
 			m_Velocity.y = -bubble->GetBounceVelocity();
 	}
 
 	if (!CollisionRules::ShouldPushBubble(collider, otherCollider, predictedPosX, m_Velocity.x))
 		return;
 
-	auto bubble = otherCollider->GetOwner()->GetComponent<BubbleComponent>();
+	auto bubble = otherCollider->GetOwner()->GetComponent<BubbleStateComponent>();
 	if (!bubble || !bubble->IsFloatingUp())
 		return;
 
