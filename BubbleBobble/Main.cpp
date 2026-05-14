@@ -34,18 +34,18 @@
 #include "Observers/ScoreObserver.h"
 #include "Observers/SteamWinObserver.h"
 
-#include "HelperFunctions.h"
+#include "HelperFunctions/GameObjectFactory.h"
 
 #include <filesystem>
 namespace fs = std::filesystem;
 
-void TileLoader(std::string& texture, glm::vec2& position, glm::vec2& scale, dae::Scene& scene) {
+void TileLoader(std::string& texture, glm::vec2& position, glm::vec2& scale, dae::Scene& scene, CollisionType type) {
 	auto go {std::make_unique<dae::GameObject>()};
 	go->GetComponent<dae::TransformComponent>()->SetLocalPosition(position.x, position.y, 0);
 	go->GetComponent<dae::TransformComponent>()->SetScale(scale.x, scale.y, 1);
 	go->AddComponent<CollisionComponent>(
 		glm::vec2{ 10, 10 },
-		CollisionType::Solid,
+		type,
 		glm::vec2{ 0.f, 0.f }
 	);
 	go->AddComponent<dae::TextureComponent>()->SetTexture(texture);
@@ -71,15 +71,15 @@ dae::Scene& LevelLoad() {
 		"#                           #",
 		"#                           #",
 		"#                           #",
-		"###   #################   ###",
+		"#//   /////////////////   //#",
 		"#                           #",
 		"#                           #",
 		"#                           #",
-		"###   #################   ###",
+		"#//   /////////////////   //#",
 		"#                           #",
 		"#                           #",
 		"#                           #",
-		"###   #################   ###",
+		"#//   /////////////////   //#",
 		"#                           #",
 		"#                           #",
 		"#                           #",
@@ -95,7 +95,14 @@ dae::Scene& LevelLoad() {
 				glm::vec2 position{ static_cast<float>(offsetX + col * tileSize), static_cast<float>(offsetY + row * tileSize) };
 				glm::vec2 scale{ 2, 2 };
 				std::string texture {"FakeFloor.png"};
-				TileLoader(texture, position, scale, scene);
+				TileLoader(texture, position, scale, scene, CollisionType::Solid);
+			}
+			if (level[row][col] == '/')
+			{
+				glm::vec2 position{ static_cast<float>(offsetX + col * tileSize), static_cast<float>(offsetY + row * tileSize) };
+				glm::vec2 scale{ 2, 2 };
+				std::string texture{ "FakeFloor.png" };
+				TileLoader(texture, position, scale, scene, CollisionType::Platform);
 			}
 		}
 	}

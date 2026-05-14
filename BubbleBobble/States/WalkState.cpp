@@ -3,7 +3,7 @@
 #include "GameObject.h"
 #include "../Components/AnimationComponent.h"
 #include "../Components/PhysicsComponent.h"
-#include "../Components/PlayerFacingComponent.h"
+#include "../Components/FacingComponent.h"
 #include "IdleState.h"
 
 void WalkState::Enter()
@@ -17,7 +17,7 @@ void WalkState::Enter()
 		const auto& velocity = physics->GetVelocity();
 		if (std::abs(velocity.x) > 0.01f)
 		{
-			auto* facing = m_pOwner->GetComponent<PlayerFacingComponent>();
+			auto* facing = m_pOwner->GetComponent<FacingComponent>();
 			if (facing)
 			{
 				facing->SetFacingFromHorizontalMovement(velocity.x);
@@ -38,7 +38,7 @@ std::unique_ptr<BaseState> WalkState::Update(float)
 	const auto& velocity = physics->GetVelocity();
 	if (std::abs(velocity.x) >= 0.01f)
 	{
-		auto* facing = m_pOwner->GetComponent<PlayerFacingComponent>();
+		auto* facing = m_pOwner->GetComponent<FacingComponent>();
 		if (facing)
 		{
 			facing->SetFacingFromHorizontalMovement(velocity.x);

@@ -8,11 +8,11 @@ enum class FacingDirection
 	Right
 };
 
-class PlayerFacingComponent final : public dae::Component
+class FacingComponent final : public dae::Component
 {
 public:
-	PlayerFacingComponent(dae::GameObject* owner);
-	virtual ~PlayerFacingComponent() = default;
+	FacingComponent(dae::GameObject* owner);
+	virtual ~FacingComponent() = default;
 
 	void FixedUpdate(float) override {}
 	void Update(float) override {}

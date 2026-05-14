@@ -16,8 +16,8 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   Commands/MoveCommand.h
   Components/ImGuiComponent.cpp 
   Components/ImGuiComponent.h
-  Components/PlayerFacingComponent.cpp
-  Components/PlayerFacingComponent.h
+  Components/FacingComponent.cpp
+  Components/FacingComponent.h
   Components/FPSComponent.cpp
   Components/FPSComponent.h
   Components/RotatorComponent.cpp
@@ -36,6 +36,8 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   Observers/SteamWinObserver.h
   Components/PhysicsComponent.h
   Components/PhysicsComponent.cpp 
+  HelperFunctions/CollisionRules.h
+  HelperFunctions/CollisionRules.cpp
   "Components/CollisionComponent.h" 
   "Components/CollisionComponent.cpp" 
   "States/BaseState.h" 
@@ -49,10 +51,10 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   "States/WalkState.cpp" 
   "Commands/JumpCommand.h" 
   "Commands/JumpCommand.cpp" 
-  "HelperFunctions.h" 
-  "HelperFunctions.cpp" 
+  "HelperFunctions/GameObjectFactory.h" 
+  "HelperFunctions/GameObjectFactory.cpp" 
   "Commands/ShootBubbleCommand.h" 
-  "Commands/ShootBubbleCommand.cpp"  )
+  "Commands/ShootBubbleCommand.cpp"   "Components/BubbleComponent.h" "Components/BubbleComponent.cpp")
 
 target_compile_features(${TARGET_NAME} PUBLIC cxx_std_20)
 

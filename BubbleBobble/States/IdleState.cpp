@@ -4,7 +4,7 @@
 #include "WalkState.h"
 #include "../Components/AnimationComponent.h"
 #include "../Components/PhysicsComponent.h"
-#include "../Components/PlayerFacingComponent.h"
+#include "../Components/FacingComponent.h"
 
 void IdleState::Enter()
 {
@@ -25,7 +25,7 @@ std::unique_ptr<BaseState> IdleState::Update(float)
 		return nullptr;
 	}
 
-	auto* facing = m_pOwner->GetComponent<PlayerFacingComponent>();
+	auto* facing = m_pOwner->GetComponent<FacingComponent>();
 	if (facing)
 	{
 		facing->SetFacingFromHorizontalMovement(velocity.x);
