@@ -110,7 +110,15 @@ void SpawnBubble(dae::Scene& scene, const glm::vec2& spawnPos, bool facingRight)
 	dae::ResourceManager::GetInstance().LoadTexture("Bubble1.png")
 	};
 
-	bubble->AddComponent<AnimationComponent>()->AddAnimation("Bubble", BubbleFrames, 0.1f, false);
+	std::vector<std::shared_ptr<dae::Texture2D>> trappedFrames = {
+	dae::ResourceManager::GetInstance().LoadTexture("EnemyBubble0.png"),
+	dae::ResourceManager::GetInstance().LoadTexture("EnemyBubble1.png"),
+	dae::ResourceManager::GetInstance().LoadTexture("EnemyBubble2.png")
+	};
+
+	auto animationComp = bubble->AddComponent<AnimationComponent>();
+	animationComp->AddAnimation("Bubble", BubbleFrames, 0.1f, false);
+	animationComp->AddAnimation("Trapped", trappedFrames, 0.1f, true);
 	bubble->GetComponent<AnimationComponent>()->PlayAnimation("Bubble");
 	bubble->AddComponent<FacingComponent>()->SetFacingDirection(facingRight ? FacingDirection::Right : FacingDirection::Left);
 	bubble->AddComponent<PhysicsComponent>();
