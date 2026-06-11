@@ -12,13 +12,18 @@
 #include <InputManager.h>
 #include "../Commands/ShootBubbleCommand.h"
 #include "../Components/BubbleStateComponent.h"
+#include "../Components/HealthComponent.h"
+#include "../Observers/HealthObserver.h"
+#include "../Components/ScoreComponent.h"
+#include "../Observers/ScoreObserver.h"
+#include "../Components/TextComponent.h"
 
 
 
-void CreatePlayer(dae::Scene& scene) {
+void CreatePlayer(dae::Scene& scene, const PlayerSettings& settings) {
 	auto player{ std::make_unique<dae::GameObject>() };
-	player->GetComponent<dae::TransformComponent>()->SetLocalPosition(400, 300, 0);
-	player->GetComponent<dae::TransformComponent>()->SetScale(2, 2, 1);
+	player->GetComponent<dae::TransformComponent>()->SetLocalPosition(settings.spawnPosition.x, settings.spawnPosition.y, 0);
+	player->GetComponent<dae::TransformComponent>()->SetScale(settings.scale.x, settings.scale.y, 1);
 	player->AddComponent<PhysicsComponent>();
 	player->AddComponent<CollisionComponent>(glm::vec2{ 20, 20 }, CollisionType::Player, glm::vec2{ 0.f, 0.f });
 	player->AddComponent<FacingComponent>();
@@ -55,22 +60,40 @@ void CreatePlayer(dae::Scene& scene) {
 	animationComp->AddAnimation("Walk", walkFrames, 0.2f, true);
 
 	player->AddComponent<PlayerStateComponent>();
-	//player->AddComponent<HealthComponent>(3)->AddObserver(healthText->GetComponent<HealthObserver>());
-	//player->AddComponent<ScoreComponent>(0)->AddObserver(scoreText->GetComponent<ScoreObserver>());
-	//player->GetComponent<ScoreComponent>()->AddObserver(scoreText->GetComponent<SteamWinObserver>());
 
+	auto healthDisplay{ std::make_unique<dae::GameObject>() };
+	healthDisplay->GetComponent<dae::TransformComponent>()->SetLocalPosition(settings.healthPosition.x, settings.healthPosition.y, 0);
+	healthDisplay->GetComponent<dae::TransformComponent>()->SetScale(2, 2, 1);
+	auto healthObserver = healthDisplay->AddComponent<HealthObserver>("Live.png", settings.health);
+
+	player->AddComponent<HealthComponent>(settings.health)->AddObserver(healthObserver);
+
+	auto scoreText{ std::make_unique<dae::GameObject>() };
+	auto font = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", 20);
+	scoreText->GetComponent<dae::TransformComponent>()->SetLocalPosition(settings.scorePosition.x, settings.scorePosition.y, 0);
+	scoreText->AddComponent<dae::TextComponent>("0", font);
+	auto scoreObserver = scoreText->AddComponent<ScoreObserver>();
+
+	auto playerText{ std::make_unique<dae::GameObject>() };
+	playerText->GetComponent<dae::TransformComponent>()->SetLocalPosition(settings.labelPosition.x, settings.labelPosition.y, 0);
+	playerText->AddComponent<dae::TextComponent>(settings.label, font);
+
+	player->AddComponent<ScoreComponent>(0)->AddObserver(scoreObserver);
 
 	auto cmdjump = std::make_unique<JumpCommand>(player.get());
 	cmdjump->SetJumpStrength(400.f);
 
 	auto cmdshoot = std::make_unique<ShootBubbleCommand>(player.get(), scene);
 
-	dae::InputManager::GetInstance().BindCommand(SDL_SCANCODE_A, std::make_unique<MoveCommand>(player.get(), glm::vec2{ -1, 0 }));
-	dae::InputManager::GetInstance().BindCommand(SDL_SCANCODE_D, std::make_unique<MoveCommand>(player.get(), glm::vec2{ 1, 0 }));
-	dae::InputManager::GetInstance().BindCommand(SDL_SCANCODE_W, std::move(cmdjump));
-	dae::InputManager::GetInstance().BindCommand(SDL_SCANCODE_S, std::make_unique<MoveCommand>(player.get(), glm::vec2{ 0, 1 }));
-	dae::InputManager::GetInstance().BindCommand(SDL_SCANCODE_SPACE, std::move(cmdshoot));
+	dae::InputManager::GetInstance().BindCommand(settings.controls.left, std::make_unique<MoveCommand>(player.get(), glm::vec2{ -1, 0 }));
+	dae::InputManager::GetInstance().BindCommand(settings.controls.right, std::make_unique<MoveCommand>(player.get(), glm::vec2{ 1, 0 }));
+	dae::InputManager::GetInstance().BindCommand(settings.controls.jump, std::move(cmdjump));
+	dae::InputManager::GetInstance().BindCommand(settings.controls.down, std::make_unique<MoveCommand>(player.get(), glm::vec2{ 0, 1 }));
+	dae::InputManager::GetInstance().BindCommand(settings.controls.shoot, std::move(cmdshoot));
 	scene.Add(std::move(player));
+	scene.Add(std::move(healthDisplay));
+	scene.Add(std::move(scoreText));
+	scene.Add(std::move(playerText));
 }
 
 void SpawnBubble(dae::Scene& scene, const glm::vec2& spawnPos, bool facingRight) {

@@ -265,7 +265,21 @@ static void load()
 
 	auto& scene = LevelLoad();
 	
-	CreatePlayer(scene);
+	PlayerSettings playerOne{};
+	playerOne.spawnPosition = { 400.f, 300.f };
+	playerOne.label = "1UP";
+	playerOne.healthPosition = { 20.f, 20.f };
+	playerOne.scorePosition = { 200.f, 20.f };
+	playerOne.labelPosition = { 200.f, 0.f };
+	playerOne.controls = {
+		SDL_SCANCODE_A,
+		SDL_SCANCODE_D,
+		SDL_SCANCODE_W,
+		SDL_SCANCODE_S,
+		SDL_SCANCODE_SPACE
+	};
+
+	CreatePlayer(scene, playerOne);
 }
 
 

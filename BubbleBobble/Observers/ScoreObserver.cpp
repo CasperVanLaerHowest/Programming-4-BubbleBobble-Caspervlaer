@@ -23,7 +23,7 @@ void ScoreObserver::OnNotify(dae::GameObject& entity, dae::Event event)
 			const auto& textComponent = GetOwner()->GetComponent<dae::TextComponent>();
 			if(textComponent)
 			{
-				textComponent->SetText("Score: " + std::to_string(score));
+				textComponent->SetText(std::to_string(score));
 			}
 		}
 	}
