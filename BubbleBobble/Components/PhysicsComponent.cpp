@@ -3,6 +3,7 @@
 #include "CollisionComponent.h"
 #include "BubbleStateComponent.h"
 #include "PlayerStateComponent.h"
+#include "ScoreComponent.h"
 #include "../HelperFunctions/CollisionRules.h"
 #include "GameObject.h"
 #include <cmath>
@@ -165,17 +166,44 @@ void PhysicsComponent::HandleBubbleInteraction(
 			playerState->TakeHit();
 	}
 
+	if (CollisionRules::ShouldCollectFruit(collider, otherCollider, predictedPosX, predictedPosY))
+	{
+		auto playerOwner = collider->GetCollisionType() == CollisionType::Player
+			? collider->GetOwner()
+			: otherCollider->GetOwner();
+		auto fruitOwner = collider->GetCollisionType() == CollisionType::Fruit
+			? collider->GetOwner()
+			: otherCollider->GetOwner();
+
+		if (auto* score = playerOwner->GetComponent<ScoreComponent>())
+			score->AddScore(100);
+
+		fruitOwner->Destroy();
+		return;
+	}
+
 	if (CollisionRules::ShouldBounceOnBubble(collider, otherCollider, currentPosition, predictedPosY, m_Velocity.y))
 	{
 		if (auto bubble = otherCollider->GetOwner()->GetComponent<BubbleStateComponent>())
+		{
 			m_Velocity.y = -bubble->GetBounceVelocity();
+
+			if (bubble->PopTrappedIntoFruit())
+				return;
+		}
 	}
 
 	if (!CollisionRules::ShouldPushBubble(collider, otherCollider, predictedPosX, m_Velocity.x))
 		return;
 
 	auto bubble = otherCollider->GetOwner()->GetComponent<BubbleStateComponent>();
-	if (!bubble || !bubble->IsFloatingUp())
+	if (!bubble)
+		return;
+
+	if (bubble->PopTrappedIntoFruit())
+		return;
+
+	if (!bubble->IsFloatingUp())
 		return;
 
 	const float pushDirection = m_Velocity.x > 0.f ? 1.f : -1.f;

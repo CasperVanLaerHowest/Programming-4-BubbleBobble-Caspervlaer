@@ -4,11 +4,12 @@
 #include <memory>
 
 class BubbleBaseState;
+namespace dae { class Scene; }
 
 class BubbleStateComponent final : public dae::Component
 {
 public:
-	BubbleStateComponent(dae::GameObject* owner);
+	BubbleStateComponent(dae::GameObject* owner, dae::Scene& scene);
 	virtual ~BubbleStateComponent() = default;
 	void FixedUpdate(float) override {};
 	void Update(float deltaTime) override;
@@ -20,6 +21,7 @@ public:
 	void PushSideways(float direction);
 	void TrapEnemy();
 	void Pop();
+	bool PopTrappedIntoFruit();
 
 	float GetSpeed() const { return m_Speed; }
 	float GetFloatSpeed() const { return m_FloatSpeed; }
@@ -29,11 +31,13 @@ public:
 	float GetLifetime() const { return m_Lifetime; }
 	float GetElapsedTime() const { return m_ElapsedTime; }
 	bool IsFloatingUp() const;
+	bool IsTrapped() const;
 
 private:
 	BubbleBaseState* GetCurrentBubbleState() const;
 
 	std::unique_ptr<BaseState> m_pCurrentState;
+	dae::Scene* m_pScene{};
 
 	float m_Speed{ 250.f };
 	float m_FloatSpeed{ 75.f };

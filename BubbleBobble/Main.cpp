@@ -32,7 +32,6 @@
 
 #include "Observers/HealthObserver.h"
 #include "Observers/ScoreObserver.h"
-#include "Observers/SteamWinObserver.h"
 
 #include "HelperFunctions/GameObjectFactory.h"
 
@@ -54,6 +53,7 @@ void TileLoader(std::string& texture, glm::vec2& position, glm::vec2& scale, dae
 
 dae::Scene& LevelLoad() {
 	auto& scene {dae::SceneManager::GetInstance().CreateScene()};
+	ClearFruitSpawnPoints();
 
 	constexpr float tileSize {23.f};
 	constexpr int offsetX {200};
@@ -70,7 +70,7 @@ dae::Scene& LevelLoad() {
 		"#                           #",
 		"#                           #",
 		"#                           #",
-		"#                           #",
+		"#      F             F      #",
 		"#//   /////////////////   //#",
 		"#                           #",
 		"#                           #",
@@ -103,6 +103,11 @@ dae::Scene& LevelLoad() {
 				glm::vec2 scale{ 2, 2 };
 				std::string texture{ "FakeFloor.png" };
 				TileLoader(texture, position, scale, scene, CollisionType::Platform);
+			}
+			if (level[row][col] == 'F')
+			{
+				glm::vec2 position{ static_cast<float>(offsetX + col * tileSize), static_cast<float>(offsetY + row * tileSize) };
+				AddFruitSpawnPoint({ position.x, position.y - 10.f });
 			}
 		}
 	}

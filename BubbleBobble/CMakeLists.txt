@@ -20,6 +20,8 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   Components/FacingComponent.h
   Components/FPSComponent.cpp
   Components/FPSComponent.h
+  Components/PoppedEnemyComponent.cpp
+  Components/PoppedEnemyComponent.h
   Components/RotatorComponent.cpp
   Components/RotatorComponent.h
   Components/HealthComponent.cpp
@@ -32,8 +34,6 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   Observers/HealthObserver.h
   Observers/ScoreObserver.cpp
   Observers/ScoreObserver.h
-  Observers/SteamWinObserver.cpp
-  Observers/SteamWinObserver.h
   Components/PhysicsComponent.h
   Components/PhysicsComponent.cpp 
   HelperFunctions/CollisionRules.h

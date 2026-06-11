@@ -3,11 +3,14 @@
 #include "../States/BubblePopState.h"
 #include "../States/BubbleShotState.h"
 #include "../States/BubbleTrappedState.h"
+#include "../HelperFunctions/GameObjectFactory.h"
 #include "GameObject.h"
 #include "PhysicsComponent.h"
+#include "TransformComponent.h"
 
-BubbleStateComponent::BubbleStateComponent(dae::GameObject* owner)
+BubbleStateComponent::BubbleStateComponent(dae::GameObject* owner, dae::Scene& scene)
 	: Component(owner)
+	, m_pScene{ &scene }
 {
 	auto physics = GetOwner()->GetComponent<PhysicsComponent>();
 	if (physics)
@@ -81,10 +84,30 @@ void BubbleStateComponent::Pop()
 	ChangeState(std::make_unique<BubblePopState>(GetOwner()));
 }
 
+bool BubbleStateComponent::PopTrappedIntoFruit()
+{
+	if (!IsTrapped() || m_pScene == nullptr || GetOwner()->IsDestroyed())
+		return false;
+
+	auto* transform = GetOwner()->GetComponent<dae::TransformComponent>();
+	if (transform == nullptr)
+		return false;
+
+	const auto& position = transform->GetWorldPosition();
+	SpawnFruit(*m_pScene, { position.x, position.y });
+	GetOwner()->Destroy();
+	return true;
+}
+
 bool BubbleStateComponent::IsFloatingUp() const
 {
 	const auto* bubbleState = GetCurrentBubbleState();
 	return bubbleState && bubbleState->IsFloatingUp();
+}
+
+bool BubbleStateComponent::IsTrapped() const
+{
+	return dynamic_cast<BubbleTrappedState*>(m_pCurrentState.get()) != nullptr;
 }
 
 BubbleBaseState* BubbleStateComponent::GetCurrentBubbleState() const

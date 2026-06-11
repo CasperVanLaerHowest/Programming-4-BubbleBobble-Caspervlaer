@@ -46,7 +46,8 @@ void dae::GameObject::Render() const
 		const float width = size.x * scale.x;
 		const float height = size.y * scale.y;
 		const SDL_FlipMode flipMode = renderComponent ? renderComponent->GetFlipMode() : SDL_FLIP_NONE;
-		Renderer::GetInstance().RenderTexture(*texture, pos.x, pos.y, width, height, flipMode);
+		const float angle = transformComponent->GetRotation().z;
+		Renderer::GetInstance().RenderTexture(*texture, pos.x, pos.y, width, height, angle, flipMode);
 	}
 
 	// Call Render() on all components (including ImGuiComponent)

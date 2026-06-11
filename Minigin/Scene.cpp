@@ -6,6 +6,12 @@ using namespace dae;
 void Scene::Add(std::unique_ptr<GameObject> object)
 {
 	assert(object != nullptr && "Cannot add a null GameObject to the scene.");
+	if (m_IsUpdating)
+	{
+		m_pendingObjects.emplace_back(std::move(object));
+		return;
+	}
+
 	m_objects.emplace_back(std::move(object));
 }
 
@@ -24,6 +30,7 @@ void Scene::Remove(const GameObject& object)
 void Scene::RemoveAll()
 {
 	m_objects.clear();
+	m_pendingObjects.clear();
 }
 
 void Scene::FixedUpdate(float fixedTimeStap)
@@ -36,11 +43,13 @@ void Scene::FixedUpdate(float fixedTimeStap)
 
 void Scene::Update(float deltaTime)
 {
+	m_IsUpdating = true;
 	for(auto& object : m_objects)
 	{
 		if (!object->IsDestroyed())
 			object->Update(deltaTime);
 	}
+	m_IsUpdating = false;
 
 	m_objects.erase(
 		std::remove_if(
@@ -50,6 +59,12 @@ void Scene::Update(float deltaTime)
 		),
 		m_objects.end()
 	);
+
+	for (auto& object : m_pendingObjects)
+	{
+		m_objects.emplace_back(std::move(object));
+	}
+	m_pendingObjects.clear();
 }
 
 void Scene::Render() const

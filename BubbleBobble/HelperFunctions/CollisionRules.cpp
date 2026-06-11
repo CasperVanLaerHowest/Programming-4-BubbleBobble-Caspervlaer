@@ -159,6 +159,27 @@ bool CollisionRules::ShouldDamagePlayer(
 		collider->CheckCollision(predictedPositionY, otherCollider->GetOwner());
 }
 
+bool CollisionRules::ShouldCollectFruit(
+	const CollisionComponent* collider,
+	const CollisionComponent* otherCollider,
+	const glm::vec2& predictedPositionX,
+	const glm::vec2& predictedPositionY)
+{
+	const bool playerHitsFruit =
+		collider->GetCollisionType() == CollisionType::Player &&
+		otherCollider->GetCollisionType() == CollisionType::Fruit;
+
+	const bool fruitHitsPlayer =
+		collider->GetCollisionType() == CollisionType::Fruit &&
+		otherCollider->GetCollisionType() == CollisionType::Player;
+
+	if (!playerHitsFruit && !fruitHitsPlayer)
+		return false;
+
+	return collider->CheckCollision(predictedPositionX, otherCollider->GetOwner()) ||
+		collider->CheckCollision(predictedPositionY, otherCollider->GetOwner());
+}
+
 bool CollisionRules::IsMovingOntoPlatform(
 	const CollisionComponent* collider,
 	const CollisionComponent* platform,

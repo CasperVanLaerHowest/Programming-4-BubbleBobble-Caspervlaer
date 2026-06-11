@@ -30,3 +30,8 @@ void CreatePlayer(dae::Scene& scene, const PlayerSettings& settings);
 void CreateEnemy(dae::Scene& scene, const glm::vec2& position);
 
 void SpawnBubble(dae::Scene& scene, const glm::vec2& position, bool facingRight);
+
+void SpawnFruit(dae::Scene& scene, const glm::vec2& position);
+
+void ClearFruitSpawnPoints();
+void AddFruitSpawnPoint(const glm::vec2& position);

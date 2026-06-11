@@ -17,7 +17,39 @@
 #include "../Components/ScoreComponent.h"
 #include "../Observers/ScoreObserver.h"
 #include "../Components/TextComponent.h"
+#include "../Components/PoppedEnemyComponent.h"
+#include <TextureComponent.h>
+#include <array>
+#include <limits>
+#include <random>
+#include <vector>
 
+namespace
+{
+	std::vector<glm::vec2> g_FruitSpawnPoints{};
+
+	glm::vec2 GetClosestFruitSpawnPoint(const glm::vec2& position)
+	{
+		if (g_FruitSpawnPoints.empty())
+			return position;
+
+		glm::vec2 closestPoint = g_FruitSpawnPoints.front();
+		float closestDistanceSquared = (std::numeric_limits<float>::max)();
+
+		for (const auto& point : g_FruitSpawnPoints)
+		{
+			const glm::vec2 difference = point - position;
+			const float distanceSquared = difference.x * difference.x + difference.y * difference.y;
+			if (distanceSquared < closestDistanceSquared)
+			{
+				closestDistanceSquared = distanceSquared;
+				closestPoint = point;
+			}
+		}
+
+		return closestPoint;
+	}
+}
 
 
 void CreatePlayer(dae::Scene& scene, const PlayerSettings& settings) {
@@ -147,11 +179,45 @@ void SpawnBubble(dae::Scene& scene, const glm::vec2& spawnPos, bool facingRight)
 	bubble->GetComponent<AnimationComponent>()->PlayAnimation("Bubble");
 	bubble->AddComponent<FacingComponent>()->SetFacingDirection(facingRight ? FacingDirection::Right : FacingDirection::Left);
 	bubble->AddComponent<PhysicsComponent>();
-	bubble->AddComponent<BubbleStateComponent>()->Start();
+	bubble->AddComponent<BubbleStateComponent>(scene)->Start();
 	bubble->AddComponent<CollisionComponent>(
 		glm::vec2{ 16.f, 16.f },
 		CollisionType::Bubble
 	);
 
 	scene.Add(std::move(bubble));
+}
+
+void SpawnFruit(dae::Scene& scene, const glm::vec2& spawnPos)
+{
+	static constexpr std::array fruitTextures{
+		"Fruit0.png",
+		"Fruit1.png",
+		"Fruit2.png",
+		"Fruit3.png",
+		"Fruit4.png"
+	};
+
+	static std::random_device randomDevice{};
+	static std::mt19937 randomEngine{ randomDevice() };
+	static std::uniform_int_distribution<std::size_t> fruitIndexDistribution{ 0, fruitTextures.size() - 1 };
+
+	auto fruit = std::make_unique<dae::GameObject>();
+	fruit->GetComponent<dae::TransformComponent>()->SetLocalPosition(spawnPos.x, spawnPos.y, 0.f);
+	fruit->GetComponent<dae::TransformComponent>()->SetScale(2.f, 2.f, 1.f);
+	const auto fruitTexture = fruitTextures[fruitIndexDistribution(randomEngine)];
+	fruit->AddComponent<dae::TextureComponent>()->SetTexture("EnemyMove0.png");
+	fruit->AddComponent<PoppedEnemyComponent>(GetClosestFruitSpawnPoint(spawnPos), fruitTexture);
+
+	scene.Add(std::move(fruit));
+}
+
+void ClearFruitSpawnPoints()
+{
+	g_FruitSpawnPoints.clear();
+}
+
+void AddFruitSpawnPoint(const glm::vec2& position)
+{
+	g_FruitSpawnPoints.push_back(position);
 }
