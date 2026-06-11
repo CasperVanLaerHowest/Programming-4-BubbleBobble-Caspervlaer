@@ -70,6 +70,9 @@ void BubbleStateComponent::PushSideways(float direction)
 
 void BubbleStateComponent::TrapEnemy()
 {
+	if (dynamic_cast<BubbleTrappedState*>(m_pCurrentState.get()) != nullptr)
+		return;
+
 	ChangeState(std::make_unique<BubbleTrappedState>(GetOwner()));
 }
 

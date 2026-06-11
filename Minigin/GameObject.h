@@ -80,10 +80,13 @@ namespace dae
 		void AddChild(GameObject* child);
 		void RemoveChild(GameObject* child);
 		const std::vector<GameObject*>& GetChildren() const { return m_pChildren; }
+		void Destroy() { m_IsDestroyed = true; }
+		bool IsDestroyed() const { return m_IsDestroyed; }
 
 	private:
 		std::array<std::unique_ptr<Component>, MAX_COMPONENTS> m_components{};
 		std::vector<GameObject*> m_pChildren{};
 		GameObject* m_pParent{ nullptr };
+		bool m_IsDestroyed{ false };
 	};
 }

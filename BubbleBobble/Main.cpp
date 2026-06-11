@@ -112,6 +112,7 @@ dae::Scene& LevelLoad() {
 
 static void load()
 {
+	/*
 	//auto& scene = dae::SceneManager::GetInstance().CreateScene();
 
 	//auto go = std::make_unique<dae::GameObject>();
@@ -262,6 +263,7 @@ static void load()
 	//scene.Add(std::move(go));
 	//scene.Add(std::move(healthText));
 	//scene.Add(std::move(scoreText));
+	*/
 
 	auto& scene = LevelLoad();
 	
@@ -278,6 +280,8 @@ static void load()
 		SDL_SCANCODE_S,
 		SDL_SCANCODE_SPACE
 	};
+
+	CreateEnemy(scene, { 500.f, 300.f });
 
 	CreatePlayer(scene, playerOne);
 }

@@ -39,6 +39,12 @@ public:
 		const glm::vec2& predictedPosition,
 		float horizontalVelocity);
 
+	static bool ShouldTrapEnemy(
+		const CollisionComponent* collider,
+		const CollisionComponent* otherCollider,
+		const glm::vec2& predictedPositionX,
+		const glm::vec2& predictedPositionY);
+
 private:
 	static bool IsMovingOntoPlatform(
 		const CollisionComponent* collider,

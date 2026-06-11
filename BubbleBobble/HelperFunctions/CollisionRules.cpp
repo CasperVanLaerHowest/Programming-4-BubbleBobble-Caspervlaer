@@ -117,6 +117,27 @@ bool CollisionRules::ShouldPushBubble(
 	return collider->CheckCollision(predictedPosition, otherCollider->GetOwner());
 }
 
+bool CollisionRules::ShouldTrapEnemy(
+	const CollisionComponent* collider,
+	const CollisionComponent* otherCollider,
+	const glm::vec2& predictedPositionX,
+	const glm::vec2& predictedPositionY)
+{
+	const bool bubbleHitsEnemy =
+		collider->GetCollisionType() == CollisionType::Bubble &&
+		otherCollider->GetCollisionType() == CollisionType::Enemy;
+
+	const bool enemyHitsBubble =
+		collider->GetCollisionType() == CollisionType::Enemy &&
+		otherCollider->GetCollisionType() == CollisionType::Bubble;
+
+	if (!bubbleHitsEnemy && !enemyHitsBubble)
+		return false;
+
+	return collider->CheckCollision(predictedPositionX, otherCollider->GetOwner()) ||
+		collider->CheckCollision(predictedPositionY, otherCollider->GetOwner());
+}
+
 bool CollisionRules::IsMovingOntoPlatform(
 	const CollisionComponent* collider,
 	const CollisionComponent* platform,

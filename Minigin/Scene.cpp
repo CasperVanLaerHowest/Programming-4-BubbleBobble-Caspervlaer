@@ -38,15 +38,26 @@ void Scene::Update(float deltaTime)
 {
 	for(auto& object : m_objects)
 	{
-		object->Update(deltaTime);
+		if (!object->IsDestroyed())
+			object->Update(deltaTime);
 	}
+
+	m_objects.erase(
+		std::remove_if(
+			m_objects.begin(),
+			m_objects.end(),
+			[](const auto& object) { return object->IsDestroyed(); }
+		),
+		m_objects.end()
+	);
 }
 
 void Scene::Render() const
 {
 	for (const auto& object : m_objects)
 	{
-		object->Render();
+		if (!object->IsDestroyed())
+			object->Render();
 	}
 }
 

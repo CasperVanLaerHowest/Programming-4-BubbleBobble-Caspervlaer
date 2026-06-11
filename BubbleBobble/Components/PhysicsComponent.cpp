@@ -13,6 +13,9 @@ PhysicsComponent::PhysicsComponent(dae::GameObject* owner)
 
 void PhysicsComponent::Update(float deltaTime)
 {
+	if (GetOwner()->IsDestroyed())
+		return;
+
 	auto transform = GetOwner()->GetComponent<dae::TransformComponent>();
 	auto collider = GetOwner()->GetComponent<CollisionComponent>();
 
@@ -26,6 +29,9 @@ void PhysicsComponent::Update(float deltaTime)
 		SetCorrectVelocity(deltaTime);
 
 		CollisionCheck(deltaTime, pos, collider);
+
+		if (GetOwner()->IsDestroyed())
+			return;
 
 		transform->SetLocalPosition(pos.x + (m_Velocity.x * deltaTime),
 									pos.y + (m_Velocity.y * deltaTime),
@@ -46,7 +52,7 @@ bool PhysicsComponent::IsGrounded() const
 
 	for (auto otherCollider : CollisionComponent::GetColliders())
 	{
-		if (otherCollider == collider)
+		if (otherCollider == collider || otherCollider->GetOwner()->IsDestroyed())
 			continue;
 
 		if (CollisionRules::IsGround(collider, otherCollider, pos, groundCheckPos))
@@ -109,7 +115,7 @@ void PhysicsComponent::CollisionCheck(float deltaTime,  glm::vec3 pos, Collision
 
 		for (auto otherCollider : CollisionComponent::GetColliders())
 		{
-			if (otherCollider == collider)
+			if (otherCollider == collider || otherCollider->GetOwner()->IsDestroyed())
 				continue;
 
 			if (CollisionRules::ShouldBlockX(collider, otherCollider, { pos.x, pos.y }, predictedPosX, m_Velocity.x))
@@ -133,6 +139,21 @@ void PhysicsComponent::HandleBubbleInteraction(
 	const glm::vec2& predictedPosX,
 	const glm::vec2& predictedPosY)
 {
+	if (CollisionRules::ShouldTrapEnemy(collider, otherCollider, predictedPosX, predictedPosY))
+	{
+		auto bubbleOwner = collider->GetCollisionType() == CollisionType::Bubble
+			? collider->GetOwner()
+			: otherCollider->GetOwner();
+		auto enemyOwner = collider->GetCollisionType() == CollisionType::Enemy
+			? collider->GetOwner()
+			: otherCollider->GetOwner();
+
+		if (auto bubble = bubbleOwner->GetComponent<BubbleStateComponent>())
+			bubble->TrapEnemy();
+
+		enemyOwner->Destroy();
+	}
+
 	if (CollisionRules::ShouldBounceOnBubble(collider, otherCollider, currentPosition, predictedPosY, m_Velocity.y))
 	{
 		if (auto bubble = otherCollider->GetOwner()->GetComponent<BubbleStateComponent>())

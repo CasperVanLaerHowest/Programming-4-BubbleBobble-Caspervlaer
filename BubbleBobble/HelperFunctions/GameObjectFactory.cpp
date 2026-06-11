@@ -25,7 +25,7 @@ void CreatePlayer(dae::Scene& scene, const PlayerSettings& settings) {
 	player->GetComponent<dae::TransformComponent>()->SetLocalPosition(settings.spawnPosition.x, settings.spawnPosition.y, 0);
 	player->GetComponent<dae::TransformComponent>()->SetScale(settings.scale.x, settings.scale.y, 1);
 	player->AddComponent<PhysicsComponent>();
-	player->AddComponent<CollisionComponent>(glm::vec2{ 20, 20 }, CollisionType::Player, glm::vec2{ 0.f, 0.f });
+	player->AddComponent<CollisionComponent>(glm::vec2{ 20, 20 }, CollisionType::Player);
 	player->AddComponent<FacingComponent>();
 
 	std::vector<std::shared_ptr<dae::Texture2D>> idleFrames = {
@@ -96,6 +96,31 @@ void CreatePlayer(dae::Scene& scene, const PlayerSettings& settings) {
 	scene.Add(std::move(playerText));
 }
 
+void CreateEnemy(dae::Scene& scene, const glm::vec2& spawnPos) {
+	auto enemy = std::make_unique<dae::GameObject>();
+	enemy->GetComponent<dae::TransformComponent>()->SetLocalPosition(spawnPos.x, spawnPos.y, 0.f);
+	enemy->GetComponent<dae::TransformComponent>()->SetScale(2.f, 2.f, 1.f);
+	enemy->AddComponent<PhysicsComponent>();
+	enemy->AddComponent<FacingComponent>();
+	enemy->AddComponent<CollisionComponent>(
+		glm::vec2{ 20.f, 20.f },
+		CollisionType::Enemy
+	);
+	
+	std::vector<std::shared_ptr<dae::Texture2D>> walkFrames = {
+	dae::ResourceManager::GetInstance().LoadTexture("EnemyMove0.png"),
+	dae::ResourceManager::GetInstance().LoadTexture("EnemyMove1.png"),
+	dae::ResourceManager::GetInstance().LoadTexture("EnemyMove2.png"),
+	dae::ResourceManager::GetInstance().LoadTexture("EnemyMove3.png")
+	};
+
+	auto animationComp = enemy->AddComponent<AnimationComponent>();
+	animationComp->AddAnimation("Walk", walkFrames, 0.5f, true);
+	animationComp->PlayAnimation("Walk");
+
+	scene.Add(std::move(enemy));
+}
+
 void SpawnBubble(dae::Scene& scene, const glm::vec2& spawnPos, bool facingRight) {
 	auto bubble = std::make_unique<dae::GameObject>();
 	bubble->GetComponent<dae::TransformComponent>()->SetLocalPosition(spawnPos.x, spawnPos.y, 0.f);
@@ -118,7 +143,7 @@ void SpawnBubble(dae::Scene& scene, const glm::vec2& spawnPos, bool facingRight)
 
 	auto animationComp = bubble->AddComponent<AnimationComponent>();
 	animationComp->AddAnimation("Bubble", BubbleFrames, 0.1f, false);
-	animationComp->AddAnimation("Trapped", trappedFrames, 0.1f, true);
+	animationComp->AddAnimation("Trapped", trappedFrames, 0.5f, true);
 	bubble->GetComponent<AnimationComponent>()->PlayAnimation("Bubble");
 	bubble->AddComponent<FacingComponent>()->SetFacingDirection(facingRight ? FacingDirection::Right : FacingDirection::Left);
 	bubble->AddComponent<PhysicsComponent>();
