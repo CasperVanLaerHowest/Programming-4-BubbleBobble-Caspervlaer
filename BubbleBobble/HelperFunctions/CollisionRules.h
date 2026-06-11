@@ -45,6 +45,12 @@ public:
 		const glm::vec2& predictedPositionX,
 		const glm::vec2& predictedPositionY);
 
+	static bool ShouldDamagePlayer(
+		const CollisionComponent* collider,
+		const CollisionComponent* otherCollider,
+		const glm::vec2& predictedPositionX,
+		const glm::vec2& predictedPositionY);
+
 private:
 	static bool IsMovingOntoPlatform(
 		const CollisionComponent* collider,

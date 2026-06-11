@@ -47,6 +47,8 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   "Components/AnimationComponent.h" 
   "Components/AnimationComponent.cpp" 
   "States/IdleState.cpp" 
+  "States/PlayerDeathState.h"
+  "States/PlayerDeathState.cpp"
   "States/WalkState.h" 
   "States/WalkState.cpp" 
   "Commands/JumpCommand.h" 

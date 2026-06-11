@@ -2,6 +2,7 @@
 #include "TransformComponent.h"
 #include "CollisionComponent.h"
 #include "BubbleStateComponent.h"
+#include "PlayerStateComponent.h"
 #include "../HelperFunctions/CollisionRules.h"
 #include "GameObject.h"
 #include <cmath>
@@ -152,6 +153,16 @@ void PhysicsComponent::HandleBubbleInteraction(
 			bubble->TrapEnemy();
 
 		enemyOwner->Destroy();
+	}
+
+	if (CollisionRules::ShouldDamagePlayer(collider, otherCollider, predictedPosX, predictedPosY))
+	{
+		auto playerOwner = collider->GetCollisionType() == CollisionType::Player
+			? collider->GetOwner()
+			: otherCollider->GetOwner();
+
+		if (auto* playerState = playerOwner->GetComponent<PlayerStateComponent>())
+			playerState->TakeHit();
 	}
 
 	if (CollisionRules::ShouldBounceOnBubble(collider, otherCollider, currentPosition, predictedPosY, m_Velocity.y))

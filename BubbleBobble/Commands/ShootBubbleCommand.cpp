@@ -4,6 +4,7 @@
 #include "GameObject.h"
 #include <TextureComponent.h>
 #include "../Components/CollisionComponent.h"
+#include "../Components/PlayerStateComponent.h"
 #include "../HelperFunctions/GameObjectFactory.h"
 
 ShootBubbleCommand::ShootBubbleCommand(dae::GameObject* pGameObject, dae::Scene& scene)
@@ -14,6 +15,9 @@ ShootBubbleCommand::ShootBubbleCommand(dae::GameObject* pGameObject, dae::Scene&
 void ShootBubbleCommand::Execute(bool notfirstExecute)
 {
 	if (notfirstExecute)
+		return;
+
+	if (auto* playerState = m_pGameObject->GetComponent<PlayerStateComponent>(); playerState && playerState->IsDying())
 		return;
 
 	auto transform = m_pGameObject->GetComponent<dae::TransformComponent>();

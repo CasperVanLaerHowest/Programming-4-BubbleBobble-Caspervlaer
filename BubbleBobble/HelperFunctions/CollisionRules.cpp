@@ -138,6 +138,27 @@ bool CollisionRules::ShouldTrapEnemy(
 		collider->CheckCollision(predictedPositionY, otherCollider->GetOwner());
 }
 
+bool CollisionRules::ShouldDamagePlayer(
+	const CollisionComponent* collider,
+	const CollisionComponent* otherCollider,
+	const glm::vec2& predictedPositionX,
+	const glm::vec2& predictedPositionY)
+{
+	const bool playerHitsEnemy =
+		collider->GetCollisionType() == CollisionType::Player &&
+		otherCollider->GetCollisionType() == CollisionType::Enemy;
+
+	const bool enemyHitsPlayer =
+		collider->GetCollisionType() == CollisionType::Enemy &&
+		otherCollider->GetCollisionType() == CollisionType::Player;
+
+	if (!playerHitsEnemy && !enemyHitsPlayer)
+		return false;
+
+	return collider->CheckCollision(predictedPositionX, otherCollider->GetOwner()) ||
+		collider->CheckCollision(predictedPositionY, otherCollider->GetOwner());
+}
+
 bool CollisionRules::IsMovingOntoPlatform(
 	const CollisionComponent* collider,
 	const CollisionComponent* platform,

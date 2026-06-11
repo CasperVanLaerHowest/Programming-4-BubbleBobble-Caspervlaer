@@ -1,6 +1,7 @@
 #include "HealthComponent.h"
 
 #include "GameObject.h"
+#include <algorithm>
 
 HealthComponent::HealthComponent(dae::GameObject* owner, int health)
 	: Component(owner)
@@ -11,7 +12,7 @@ HealthComponent::HealthComponent(dae::GameObject* owner, int health)
 
 void HealthComponent::TakeDamage()
 {
-	m_Health -= 1;
+	m_Health = std::max(0, m_Health - 1);
 	Notify(*GetOwner(), dae::Event::TAKE_DAMAGE);
 	CheckDeath();
 }

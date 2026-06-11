@@ -59,7 +59,7 @@ void CreatePlayer(dae::Scene& scene, const PlayerSettings& settings) {
 	animationComp->AddAnimation("Shoot", shootFrames, 0.2f, false);
 	animationComp->AddAnimation("Walk", walkFrames, 0.2f, true);
 
-	player->AddComponent<PlayerStateComponent>();
+	player->AddComponent<PlayerStateComponent>(settings.spawnPosition);
 
 	auto healthDisplay{ std::make_unique<dae::GameObject>() };
 	healthDisplay->GetComponent<dae::TransformComponent>()->SetLocalPosition(settings.healthPosition.x, settings.healthPosition.y, 0);

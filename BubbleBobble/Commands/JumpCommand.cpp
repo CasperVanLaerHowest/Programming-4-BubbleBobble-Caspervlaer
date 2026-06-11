@@ -1,6 +1,7 @@
 #include "JumpCommand.h"
 #include "TransformComponent.h"
 #include "../Components/PhysicsComponent.h"
+#include "../Components/PlayerStateComponent.h"
 
 JumpCommand::JumpCommand(dae::GameObject* pGameObject, float jumpStrength)
 	: m_pGameObject(pGameObject)
@@ -10,6 +11,9 @@ JumpCommand::JumpCommand(dae::GameObject* pGameObject, float jumpStrength)
 
 void JumpCommand::Execute(bool notfirstExecute)
 {
+	if (auto* playerState = m_pGameObject->GetComponent<PlayerStateComponent>(); playerState && playerState->IsDying())
+		return;
+
 	auto physics = m_pGameObject->GetComponent<PhysicsComponent>();
 	if (physics && physics->IsGrounded() && !notfirstExecute)
 	{

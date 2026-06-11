@@ -2,6 +2,7 @@
 #include "TransformComponent.h"
 #include "GameTime.h"
 #include "../Components/PhysicsComponent.h"
+#include "../Components/PlayerStateComponent.h"
 
 MoveCommand::MoveCommand(dae::GameObject* pGameObject, const glm::vec2& direction)
 	: m_pGameObject{ pGameObject }, m_Direction{ direction }
@@ -11,6 +12,9 @@ MoveCommand::MoveCommand(dae::GameObject* pGameObject, const glm::vec2& directio
 
 void MoveCommand::Execute(bool notfirstExecute)
 {
+	if (auto* playerState = m_pGameObject->GetComponent<PlayerStateComponent>(); playerState && playerState->IsDying())
+		return;
+
 	if (notfirstExecute)
 	{
 		//std::cout << "first MoveCommand executed" << std::endl;
