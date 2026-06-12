@@ -36,6 +36,7 @@
 #include "HelperFunctions/GameObjectFactory.h"
 
 #include <filesystem>
+#include <vector>
 namespace fs = std::filesystem;
 
 void TileLoader(std::string& texture, glm::vec2& position, glm::vec2& scale, dae::Scene& scene, CollisionType type) {

@@ -33,6 +33,7 @@ public:
 	float GetElapsedTime() const { return m_ElapsedTime; }
 	bool IsFloatingUp() const;
 	bool IsTrapped() const;
+	bool CanTrapEnemy() const;
 
 private:
 	BubbleBaseState* GetCurrentBubbleState() const;

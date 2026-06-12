@@ -1,6 +1,7 @@
 #include "GameObjectFactory.h"
 #include "../Components/CollisionComponent.h"
 #include "../Components/AnimationComponent.h"
+#include "../Components/EnemyStateComponent.h"
 #include "../Components/PlayerStateComponent.h"
 #include "../Components/FacingComponent.h"
 #include "../Components/PhysicsComponent.h"
@@ -132,7 +133,8 @@ void CreateEnemy(dae::Scene& scene, const glm::vec2& spawnPos) {
 	auto enemy = std::make_unique<dae::GameObject>();
 	enemy->GetComponent<dae::TransformComponent>()->SetLocalPosition(spawnPos.x, spawnPos.y, 0.f);
 	enemy->GetComponent<dae::TransformComponent>()->SetScale(2.f, 2.f, 1.f);
-	enemy->AddComponent<PhysicsComponent>();
+	auto* physics = enemy->AddComponent<PhysicsComponent>();
+	physics->SetMaxHorizontalSpeed(120.f);
 	enemy->AddComponent<FacingComponent>();
 	enemy->AddComponent<CollisionComponent>(
 		glm::vec2{ 20.f, 20.f },
@@ -146,9 +148,18 @@ void CreateEnemy(dae::Scene& scene, const glm::vec2& spawnPos) {
 	dae::ResourceManager::GetInstance().LoadTexture("EnemyMove3.png")
 	};
 
+	std::vector<std::shared_ptr<dae::Texture2D>> angryFrames = {
+	dae::ResourceManager::GetInstance().LoadTexture("EnemyAngry0.png"),
+	dae::ResourceManager::GetInstance().LoadTexture("EnemyAngry1.png"),
+	dae::ResourceManager::GetInstance().LoadTexture("EnemyAngry2.png"),
+	dae::ResourceManager::GetInstance().LoadTexture("EnemyAngry3.png")
+	};
+
 	auto animationComp = enemy->AddComponent<AnimationComponent>();
 	animationComp->AddAnimation("Walk", walkFrames, 0.5f, true);
+	animationComp->AddAnimation("Angry", angryFrames, 0.25f, true);
 	animationComp->PlayAnimation("Walk");
+	enemy->AddComponent<EnemyStateComponent>();
 
 	scene.Add(std::move(enemy));
 }

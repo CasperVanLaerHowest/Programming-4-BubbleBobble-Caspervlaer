@@ -18,6 +18,8 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   Components/ImGuiComponent.h
   Components/FacingComponent.cpp
   Components/FacingComponent.h
+  Components/EnemyStateComponent.cpp
+  Components/EnemyStateComponent.h
   Components/FPSComponent.cpp
   Components/FPSComponent.h
   Components/PoppedEnemyComponent.cpp
@@ -41,6 +43,11 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   "Components/CollisionComponent.h" 
   "Components/CollisionComponent.cpp" 
   "States/BaseState.h" 
+  "States/EnemyBaseState.h"
+  "States/EnemyWalkState.h"
+  "States/EnemyWalkState.cpp"
+  "States/EnemyAngryState.h"
+  "States/EnemyAngryState.cpp"
   "Components/PlayerStateComponent.h" 
   "Components/PlayerStateComponent.cpp" 
   "States/IdleState.h" 

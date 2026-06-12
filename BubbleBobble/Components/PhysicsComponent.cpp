@@ -150,8 +150,11 @@ void PhysicsComponent::HandleBubbleInteraction(
 			? collider->GetOwner()
 			: otherCollider->GetOwner();
 
-		if (auto bubble = bubbleOwner->GetComponent<BubbleStateComponent>())
-			bubble->TrapEnemy();
+		auto bubble = bubbleOwner->GetComponent<BubbleStateComponent>();
+		if (bubble == nullptr || !bubble->CanTrapEnemy())
+			return;
+
+		bubble->TrapEnemy();
 
 		enemyOwner->Destroy();
 	}

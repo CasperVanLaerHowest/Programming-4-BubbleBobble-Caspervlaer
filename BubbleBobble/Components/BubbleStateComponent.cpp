@@ -137,6 +137,11 @@ bool BubbleStateComponent::IsTrapped() const
 	return dynamic_cast<BubbleTrappedState*>(m_pCurrentState.get()) != nullptr;
 }
 
+bool BubbleStateComponent::CanTrapEnemy() const
+{
+	return dynamic_cast<BubbleShotState*>(m_pCurrentState.get()) != nullptr;
+}
+
 BubbleBaseState* BubbleStateComponent::GetCurrentBubbleState() const
 {
 	return dynamic_cast<BubbleBaseState*>(m_pCurrentState.get());
