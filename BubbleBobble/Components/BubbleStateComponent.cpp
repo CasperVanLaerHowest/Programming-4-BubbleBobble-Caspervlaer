@@ -4,6 +4,7 @@
 #include "../States/BubbleShotState.h"
 #include "../States/BubbleTrappedState.h"
 #include "../HelperFunctions/GameObjectFactory.h"
+#include "AnimationComponent.h"
 #include "GameObject.h"
 #include "PhysicsComponent.h"
 #include "TransformComponent.h"
@@ -25,6 +26,7 @@ BubbleStateComponent::BubbleStateComponent(dae::GameObject* owner, dae::Scene& s
 void BubbleStateComponent::Update(float deltaTime)
 {
 	m_ElapsedTime += deltaTime;
+	UpdateWarningAnimation();
 
 	if (!m_pCurrentState)
 		return;
@@ -77,6 +79,14 @@ void BubbleStateComponent::TrapEnemy()
 		return;
 
 	ChangeState(std::make_unique<BubbleTrappedState>(GetOwner()));
+
+	if (m_IsWarning)
+	{
+		if (auto* animation = GetOwner()->GetComponent<AnimationComponent>())
+		{
+			animation->PlayAnimation("TrappedRed");
+		}
+	}
 }
 
 void BubbleStateComponent::Pop()
@@ -99,6 +109,23 @@ bool BubbleStateComponent::PopTrappedIntoFruit()
 	return true;
 }
 
+void BubbleStateComponent::Expire()
+{
+	if (GetOwner()->IsDestroyed())
+		return;
+
+	if (IsTrapped() && m_pScene != nullptr)
+	{
+		if (auto* transform = GetOwner()->GetComponent<dae::TransformComponent>())
+		{
+			const auto& position = transform->GetWorldPosition();
+			CreateEnemy(*m_pScene, { position.x, position.y });
+		}
+	}
+
+	GetOwner()->Destroy();
+}
+
 bool BubbleStateComponent::IsFloatingUp() const
 {
 	const auto* bubbleState = GetCurrentBubbleState();
@@ -113,4 +140,17 @@ bool BubbleStateComponent::IsTrapped() const
 BubbleBaseState* BubbleStateComponent::GetCurrentBubbleState() const
 {
 	return dynamic_cast<BubbleBaseState*>(m_pCurrentState.get());
+}
+
+void BubbleStateComponent::UpdateWarningAnimation()
+{
+	if (m_IsWarning || m_ElapsedTime < m_Lifetime - m_WarningTime)
+		return;
+
+	m_IsWarning = true;
+
+	if (auto* animation = GetOwner()->GetComponent<AnimationComponent>())
+	{
+		animation->PlayAnimation(IsTrapped() ? "TrappedRed" : "BubbleRed");
+	}
 }

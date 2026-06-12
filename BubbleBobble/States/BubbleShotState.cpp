@@ -25,7 +25,10 @@ std::unique_ptr<BaseState> BubbleShotState::Update(float)
 		return nullptr;
 
 	if (bubble->GetElapsedTime() >= bubble->GetLifetime())
-		return std::make_unique<BubblePopState>(m_pOwner);
+	{
+		bubble->Expire();
+		return nullptr;
+	}
 
 	if (bubble->GetElapsedTime() > bubble->GetInitialMoveTime())
 		return std::make_unique<BubbleDriftState>(m_pOwner);

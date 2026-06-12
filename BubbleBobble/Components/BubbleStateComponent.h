@@ -22,6 +22,7 @@ public:
 	void TrapEnemy();
 	void Pop();
 	bool PopTrappedIntoFruit();
+	void Expire();
 
 	float GetSpeed() const { return m_Speed; }
 	float GetFloatSpeed() const { return m_FloatSpeed; }
@@ -35,6 +36,7 @@ public:
 
 private:
 	BubbleBaseState* GetCurrentBubbleState() const;
+	void UpdateWarningAnimation();
 
 	std::unique_ptr<BaseState> m_pCurrentState;
 	dae::Scene* m_pScene{};
@@ -45,5 +47,7 @@ private:
 	float m_PushVelocity{ 120.f };
 	float m_InitialMoveTime{ 0.5f };
 	float m_Lifetime{ 10.f };
+	float m_WarningTime{ 3.f };
 	float m_ElapsedTime{ 0.f };
+	bool m_IsWarning{};
 };
