@@ -1,18 +1,40 @@
-﻿# Minigin
+# Bubble Bobble (Custom Game Engine)
 
-Minigin is a very small project using [SDL3](https://www.libsdl.org/) and [glm](https://github.com/g-truc/glm) for 2D c++ game projects. It is in no way a game engine, only a barebone start project where everything sdl related has been set up. It contains glm for vector math, to aleviate the need to write custom vector and matrix classes.
+A custom C++ 2D game engine built on top of Minigin using **SDL3** and **GLM**, developed for the Programming 4 course at Howest DAE. This engine recreates the classic arcade game **Bubble Bobble**, implementing clean architectural design patterns to separate game logic, rendering, audio, and physics.
 
-[![Build Status](https://github.com/avadae/minigin/actions/workflows/cmake.yml/badge.svg)](https://github.com/avadae/cmake/actions)
-[![Build Status](https://github.com/avadae/minigin/actions/workflows/emscripten.yml/badge.svg)](https://github.com/avadae/emscripten/actions)
-[![GitHub Release](https://img.shields.io/github/v/release/avadae/minigin?logo=github&sort=semver)](https://github.com/avadae/minigin/releases/latest)
+## Core Features & Gameplay
+* **Classic Bubble Bobble Mechanics**: Bubble shooting, jumping, floating physics, enemy entrapment, popping mechanics, and falling states.
+* **Maita Enemy Variant**: Advanced enemy behavior capable of moving and firing projectile balls towards players.
+* **Game Modes**: Support for Single Player, Co-op, and Versus mode.
+* **Data-driven Levels**: Levels, platforms, and game modes are fully parsed and loaded dynamically from text configurations (`Levels.txt`).
+* **Highscore System**: Local highscore persistence (saving/sorting player names and scores in `Data/HighScores.txt`).
+* **Audio System**: Event-driven sounds for shooting, hit detection, pickups, level changes, and music.
 
-# Goal
+## Architectural Design Patterns
+To keep the engine modular, performant, and extensible, the following design choices were implemented:
 
-Minigin can/may be used as a start project for the exam assignment in the course [Programming 4](https://youtu.be/j96Oh6vzhmg) at DAE. In that assignment students need to recreate a popular 80's arcade game with a game engine they need to program themselves. During the course we discuss several game programming patterns, using the book '[Game Programming Patterns](https://gameprogrammingpatterns.com/)' by [Robert Nystrom](https://github.com/munificent) as reading material. 
+1. **Component Pattern**
+   * Game objects are structured using a component-based model (`Component` base class). 
+   * Separation of concerns: rendering, movement, states, and game logic are separated into discrete, reusable components such as `PhysicsComponent`, `CollisionComponent`, `BubbleStateComponent`, `EnemyStateComponent`, and `HighScoreEntryComponent`.
 
-# Disclaimer
+2. **Command Pattern**
+   * Input handling is completely decoupled from actor logic using the Command Pattern.
+   * Player/system commands (e.g., `MoveCommand`, `ShootBubbleCommand`, `SkipLevelCommand`, `HighScoreInputCommand`) map input keys/buttons dynamically to component methods.
+   * Supports both keyboard scans and Xbox controller triggers.
 
-Minigin is, despite perhaps the suggestion in its name, **not** a game engine. It is just a very simple SDL3 ready project with some of the scaffolding in place to get started. None of the patterns discussed in the course are used yet (except singleton which use we challenge during the course). It is up to the students to implement their own vision for their engine, apply patterns as they see fit, create their game as efficient as possible.
+3. **State Pattern**
+   * Used to model complex, state-dependent behavior for players, bubbles, and enemies.
+   * Example: Enemies transition between standard walking, bubble-entrapped floating, angry/accelerated mode, and dying. This prevents nested conditional checks and ensures clean state transitions.
+
+4. **Observer Pattern & Event Queue**
+   * Decoupled communication using a centralized `GameEventQueue`.
+   * Broadcasters publish events (e.g., score points, player hurt, level transition), which are received by registered listeners.
+   * `AudioObserver` listens to events to play corresponding sound effects without tight coupling to game physics or player code.
+
+5. **Service Locator**
+   * Used for the Audio engine hook (`AudioLocator`) to allow components to request audio playback globally without knowing the concrete sound library details.
+
+---
 
 # Use
 
