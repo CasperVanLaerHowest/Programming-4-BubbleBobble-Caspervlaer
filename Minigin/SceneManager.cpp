@@ -1,5 +1,6 @@
 #include "SceneManager.h"
 #include "Scene.h"
+#include <utility>
 
 void dae::SceneManager::FixedUpdate(float fixedTimeStap)
 {
@@ -11,6 +12,16 @@ void dae::SceneManager::Update(float deltaTime)
 {
 	if (m_pActiveScene != nullptr)
 		m_pActiveScene->Update(deltaTime);
+
+	auto actions = std::move(m_PostUpdateActions);
+	m_PostUpdateActions.clear();
+	for (auto& action : actions)
+	{
+		if (action)
+		{
+			action();
+		}
+	}
 }
 
 void dae::SceneManager::Render()
@@ -36,8 +47,24 @@ dae::Scene& dae::SceneManager::CreateScene(const std::string& name)
 	return scene;
 }
 
+dae::Scene& dae::SceneManager::CreateOrClearScene(const std::string& name)
+{
+	if (const auto scene = m_namedScenes.find(name); scene != m_namedScenes.end())
+	{
+		scene->second->RemoveAll();
+		return *scene->second;
+	}
+
+	return CreateScene(name);
+}
+
 void dae::SceneManager::SetActiveScene(const std::string& name)
 {
 	if (const auto scene = m_namedScenes.find(name); scene != m_namedScenes.end())
 		m_pActiveScene = scene->second;
+}
+
+void dae::SceneManager::QueuePostUpdateAction(std::function<void()> action)
+{
+	m_PostUpdateActions.push_back(std::move(action));
 }

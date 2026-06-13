@@ -13,10 +13,12 @@ public:
 	};
 	~Impl() = default;
 
-	bool IsPressed(Inputs input) {
+	bool IsPressed(Inputs input, int controllerIndex) {
+		if (controllerIndex < 0 || controllerIndex >= XUSER_MAX_COUNT)
+			return false;
 		
 		ZeroMemory(&m_State, sizeof(XINPUT_STATE));
-		DWORD dwResult = XInputGetState(0, &m_State);
+		DWORD dwResult = XInputGetState(static_cast<DWORD>(controllerIndex), &m_State);
 		if (dwResult == ERROR_SUCCESS)
 		{
 			switch (input)
@@ -67,6 +69,16 @@ public:
 		}
 		return false;
 	}
+
+	bool IsConnected(int controllerIndex)
+	{
+		if (controllerIndex < 0 || controllerIndex >= XUSER_MAX_COUNT)
+			return false;
+
+		XINPUT_STATE state{};
+		ZeroMemory(&state, sizeof(XINPUT_STATE));
+		return XInputGetState(static_cast<DWORD>(controllerIndex), &state) == ERROR_SUCCESS;
+	}
 };
 
 ControllerInput::ControllerInput() : m_pImpl(std::make_unique<Impl>()) {}
@@ -85,11 +97,21 @@ ControllerInput::ControllerInput(ControllerInput&& other) noexcept = default;
 
 ControllerInput& ControllerInput::operator=(ControllerInput&& other) noexcept = default;
 
-bool ControllerInput::IsPressed([[maybe_unused]] Inputs input)
+bool ControllerInput::IsPressed([[maybe_unused]] Inputs input, [[maybe_unused]] int controllerIndex)
 {
 #ifdef _WIN32
 	if (m_pImpl) {
-		return m_pImpl->IsPressed(input);
+		return m_pImpl->IsPressed(input, controllerIndex);
+	}
+#endif
+	return false;
+}
+
+bool ControllerInput::IsConnected([[maybe_unused]] int controllerIndex)
+{
+#ifdef _WIN32
+	if (m_pImpl) {
+		return m_pImpl->IsConnected(controllerIndex);
 	}
 #endif
 	return false;

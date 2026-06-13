@@ -39,7 +39,8 @@ public:
 	ControllerInput(ControllerInput&&) noexcept;
 	ControllerInput& operator=(ControllerInput&&) noexcept;
 
-	bool IsPressed(Inputs input);
+	bool IsPressed(Inputs input, int controllerIndex = 0);
+	bool IsConnected(int controllerIndex);
 
 private:
 	class Impl;
