@@ -1,5 +1,7 @@
 # Bubble Bobble (Custom Game Engine)
 
+[![GitHub Repo](https://img.shields.io/badge/GitHub-Repository-blue?logo=github)](https://github.com/CasperVanLaerHowest/Programming-4-BubbleBobble-Caspervlaer)
+
 A custom C++ 2D game engine built on top of Minigin using **SDL3** and **GLM**, developed for the Programming 4 course at Howest DAE. This engine recreates the classic arcade game **Bubble Bobble**, implementing clean architectural design patterns to separate game logic, rendering, audio, and physics.
 
 ## Core Features & Gameplay
