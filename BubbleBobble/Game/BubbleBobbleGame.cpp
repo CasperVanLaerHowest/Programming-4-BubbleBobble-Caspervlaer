@@ -1,6 +1,7 @@
 #include "BubbleBobbleGame.h"
 
 #include "../Commands/HighScoreInputCommand.h"
+#include "../Commands/MuteCommand.h"
 #include "../Commands/StartMenuInputCommand.h"
 #include "../Components/HighScoreEntryComponent.h"
 #include "../Components/StartMenuComponent.h"
@@ -37,6 +38,7 @@ BubbleBobbleGame::~BubbleBobbleGame()
 
 void BubbleBobbleGame::Load()
 {
+	dae::InputManager::GetInstance().BindCommand(SDL_SCANCODE_F2, std::make_unique<MuteCommand>());
 	LoadStartScreen();
 	dae::SceneManager::GetInstance().SetActiveScene("Start");
 }

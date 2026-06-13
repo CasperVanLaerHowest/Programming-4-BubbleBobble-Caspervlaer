@@ -18,6 +18,8 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   Commands/HighScoreInputCommand.h
   Commands/MoveCommand.cpp
   Commands/MoveCommand.h
+  Commands/MuteCommand.cpp
+  Commands/MuteCommand.h
   Commands/SkipLevelCommand.cpp
   Commands/SkipLevelCommand.h
   Commands/ShootMaitaBallCommand.cpp
