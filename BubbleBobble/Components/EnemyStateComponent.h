@@ -32,7 +32,6 @@ public:
 	float GetAngrySpeed() const { return m_AngrySpeed; }
 
 private:
-	bool TryFindDropDirection(float playerX, float& direction) const;
 	bool HasReachablePlatformAbove() const;
 	bool HasPlatformAcrossGap(float direction) const;
 	bool HasGroundAtHorizontalOffset(float offset) const;
@@ -60,8 +59,6 @@ private:
 	float m_GroundProbeDistance{ 8.f };
 	float m_UpJumpSearchHeight{ 140.f };
 	float m_UpJumpHorizontalMargin{ 6.f };
-	float m_DropSearchStep{ 12.f };
-	int m_DropSearchSteps{ 30 };
 	float m_GapJumpSearchStep{ 6.f };
 	int m_GapJumpSearchSteps{ 30 };
 };

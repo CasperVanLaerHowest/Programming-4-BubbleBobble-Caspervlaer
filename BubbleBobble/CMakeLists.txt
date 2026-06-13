@@ -8,32 +8,56 @@ endif()
 
 add_executable(${TARGET_NAME} ${TARGET_PARAM}
   Main.cpp
-  Commands/TakeDamageCommand.cpp
-  Commands/TakeDamageCommand.h
-  Commands/AddScoreCommand.cpp
-  Commands/AddScoreCommand.h
+  Events/GameEvent.h
+  Events/GameEventQueue.cpp
+  Events/GameEventQueue.h
+  Game/BubbleBobbleGame.cpp
+  Game/BubbleBobbleGame.h
+  Game/GameMode.h
+  Commands/HighScoreInputCommand.cpp
+  Commands/HighScoreInputCommand.h
   Commands/MoveCommand.cpp
   Commands/MoveCommand.h
-  Commands/StartGameCommand.cpp
-  Commands/StartGameCommand.h
+  Commands/SkipLevelCommand.cpp
+  Commands/SkipLevelCommand.h
+  Commands/ShootMaitaBallCommand.cpp
+  Commands/ShootMaitaBallCommand.h
+  Commands/StartMenuInputCommand.cpp
+  Commands/StartMenuInputCommand.h
   Components/ImGuiComponent.cpp 
   Components/ImGuiComponent.h
   Components/FacingComponent.cpp
   Components/FacingComponent.h
+  Components/EnemyDropComponent.cpp
+  Components/EnemyDropComponent.h
+  Components/LevelFlowComponent.cpp
+  Components/LevelFlowComponent.h
+  Components/MaitaBallComponent.cpp
+  Components/MaitaBallComponent.h
+  Components/MaitaPlayerComponent.cpp
+  Components/MaitaPlayerComponent.h
+  Components/MaitaStateComponent.cpp
+  Components/MaitaStateComponent.h
   Components/EnemyStateComponent.cpp
   Components/EnemyStateComponent.h
-  Components/FPSComponent.cpp
-  Components/FPSComponent.h
   Components/PoppedEnemyComponent.cpp
   Components/PoppedEnemyComponent.h
-  Components/RotatorComponent.cpp
-  Components/RotatorComponent.h
+  Components/PlayerSlotComponent.cpp
+  Components/PlayerSlotComponent.h
   Components/HealthComponent.cpp
   Components/HealthComponent.h
+  Components/HighScoreEntryComponent.cpp
+  Components/HighScoreEntryComponent.h
   Components/ScoreComponent.cpp
   Components/ScoreComponent.h
   Components/TextComponent.cpp
   Components/TextComponent.h
+  Components/StartMenuComponent.cpp
+  Components/StartMenuComponent.h
+  Components/TimedCallbackComponent.cpp
+  Components/TimedCallbackComponent.h
+  Observers/AudioObserver.cpp
+  Observers/AudioObserver.h
   Observers/HealthObserver.cpp
   Observers/HealthObserver.h
   Observers/ScoreObserver.cpp
@@ -42,6 +66,8 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   Components/PhysicsComponent.cpp 
   HelperFunctions/CollisionRules.h
   HelperFunctions/CollisionRules.cpp
+  HelperFunctions/FruitSpawnRegistry.h
+  HelperFunctions/FruitSpawnRegistry.cpp
   "Components/CollisionComponent.h" 
   "Components/CollisionComponent.cpp" 
   "States/BaseState.h" 
@@ -66,6 +92,10 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   "HelperFunctions/GameObjectFactory.cpp" 
   "Commands/ShootBubbleCommand.h" 
   "Commands/ShootBubbleCommand.cpp"
+  "HelperFunctions/LevelLoader.h"
+  "HelperFunctions/LevelLoader.cpp"
+  "HelperFunctions/HighScoreManager.h"
+  "HelperFunctions/HighScoreManager.cpp"
   "Components/BubbleStateComponent.h"
   "Components/BubbleStateComponent.cpp"
   "States/BubbleBaseState.h"

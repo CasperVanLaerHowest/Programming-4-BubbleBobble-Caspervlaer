@@ -35,7 +35,11 @@ void dae::TextComponent::Update([[maybe_unused]] float deltatime)
 
 void dae::TextComponent::UpdateTexture()
 {
-	const auto surf = TTF_RenderText_Blended(m_font->GetFont(), m_text.c_str(), m_text.length(), m_color);
+	const bool hasMultipleLines = m_text.find('\n') != std::string::npos;
+	const auto surf = hasMultipleLines
+		? TTF_RenderText_Blended_Wrapped(m_font->GetFont(), m_text.c_str(), m_text.length(), m_color, 0)
+		: TTF_RenderText_Blended(m_font->GetFont(), m_text.c_str(), m_text.length(), m_color);
+
 	if (surf == nullptr) 
 	{
 		throw std::runtime_error(std::string("Render text failed: ") + SDL_GetError());

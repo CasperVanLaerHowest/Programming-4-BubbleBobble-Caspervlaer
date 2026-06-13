@@ -2,8 +2,10 @@
 #include "Component.h"
 #include "../States/BaseState.h"
 #include <memory>
+#include <string>
 
 class BubbleBaseState;
+class MaitaPlayerComponent;
 namespace dae { class Scene; }
 
 class BubbleStateComponent final : public dae::Component
@@ -20,6 +22,8 @@ public:
 	void PrepareMovement();
 	void PushSideways(float direction);
 	void TrapEnemy();
+	void TrapEnemy(const std::string& fruitTexture, int scoreValue);
+	void TrapMaitaPlayer(MaitaPlayerComponent* maitaPlayer);
 	void Pop();
 	bool PopTrappedIntoFruit();
 	void Expire();
@@ -51,4 +55,7 @@ private:
 	float m_WarningTime{ 3.f };
 	float m_ElapsedTime{ 0.f };
 	bool m_IsWarning{};
+	std::string m_FruitTexture{ "Fruit0.png" };
+	int m_FruitScoreValue{ 100 };
+	MaitaPlayerComponent* m_TrappedMaitaPlayer{};
 };

@@ -146,10 +146,12 @@ bool CollisionRules::ShouldDamagePlayer(
 {
 	const bool playerHitsEnemy =
 		collider->GetCollisionType() == CollisionType::Player &&
-		otherCollider->GetCollisionType() == CollisionType::Enemy;
+		(otherCollider->GetCollisionType() == CollisionType::Enemy ||
+			otherCollider->GetCollisionType() == CollisionType::MaitaBall);
 
 	const bool enemyHitsPlayer =
-		collider->GetCollisionType() == CollisionType::Enemy &&
+		(collider->GetCollisionType() == CollisionType::Enemy ||
+			collider->GetCollisionType() == CollisionType::MaitaBall) &&
 		otherCollider->GetCollisionType() == CollisionType::Player;
 
 	if (!playerHitsEnemy && !enemyHitsPlayer)

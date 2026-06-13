@@ -68,12 +68,7 @@ void EnemyStateComponent::UpdateTargetDirection(float)
 
 	if (playerIsBelow)
 	{
-		float dropDirection{};
-		if (TryFindDropDirection(playerPosition.x, dropDirection))
-		{
-			m_Direction = dropDirection;
-			return;
-		}
+		return;
 	}
 
 	if (std::abs(playerPosition.x - position.x) > 8.f)
@@ -245,47 +240,6 @@ bool EnemyStateComponent::HasGroundAtHorizontalOffset(float offset) const
 	}
 
 	return false;
-}
-
-bool EnemyStateComponent::TryFindDropDirection(float playerX, float& direction) const
-{
-	const auto position = GetPosition();
-	float closestLeftDrop = (std::numeric_limits<float>::max)();
-	float closestRightDrop = (std::numeric_limits<float>::max)();
-
-	for (int step = 1; step <= m_DropSearchSteps; ++step)
-	{
-		const float distance = step * m_DropSearchStep;
-		if (closestLeftDrop == (std::numeric_limits<float>::max)() && !HasGroundAtHorizontalOffset(-distance))
-			closestLeftDrop = distance;
-
-		if (closestRightDrop == (std::numeric_limits<float>::max)() && !HasGroundAtHorizontalOffset(distance))
-			closestRightDrop = distance;
-	}
-
-	const bool foundLeft = closestLeftDrop != (std::numeric_limits<float>::max)();
-	const bool foundRight = closestRightDrop != (std::numeric_limits<float>::max)();
-	if (!foundLeft && !foundRight)
-		return false;
-
-	if (foundLeft && !foundRight)
-	{
-		direction = -1.f;
-		return true;
-	}
-
-	if (!foundLeft && foundRight)
-	{
-		direction = 1.f;
-		return true;
-	}
-
-	const float leftDropX = position.x - closestLeftDrop;
-	const float rightDropX = position.x + closestRightDrop;
-	const float leftDistanceToPlayer = std::abs(playerX - leftDropX);
-	const float rightDistanceToPlayer = std::abs(playerX - rightDropX);
-	direction = leftDistanceToPlayer < rightDistanceToPlayer ? -1.f : 1.f;
-	return true;
 }
 
 bool EnemyStateComponent::HasReachablePlatformAbove() const

@@ -6,6 +6,7 @@
 #include "../Components/CollisionComponent.h"
 #include "../Components/PlayerStateComponent.h"
 #include "../HelperFunctions/GameObjectFactory.h"
+#include "Service/AudioLocator.h"
 
 ShootBubbleCommand::ShootBubbleCommand(dae::GameObject* pGameObject, dae::Scene& scene)
 	: m_pGameObject(pGameObject), m_Scene(scene)
@@ -37,5 +38,6 @@ void ShootBubbleCommand::Execute(bool notfirstExecute)
 		};
 
 		SpawnBubble(m_Scene, spawnPos, facing->IsFacingRight());
+		AudioLocator::GetAudio().PlaySound("Data/Sound/shoot.wav");
 	}
 }

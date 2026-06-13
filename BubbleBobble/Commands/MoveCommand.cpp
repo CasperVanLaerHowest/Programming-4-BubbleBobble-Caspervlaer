@@ -1,6 +1,7 @@
 #include "MoveCommand.h"
 #include "TransformComponent.h"
 #include "GameTime.h"
+#include "../Components/MaitaPlayerComponent.h"
 #include "../Components/PhysicsComponent.h"
 #include "../Components/PlayerStateComponent.h"
 
@@ -13,6 +14,9 @@ MoveCommand::MoveCommand(dae::GameObject* pGameObject, const glm::vec2& directio
 void MoveCommand::Execute(bool notfirstExecute)
 {
 	if (auto* playerState = m_pGameObject->GetComponent<PlayerStateComponent>(); playerState && playerState->IsDying())
+		return;
+
+	if (auto* maitaPlayer = m_pGameObject->GetComponent<MaitaPlayerComponent>(); maitaPlayer && maitaPlayer->IsTrapped())
 		return;
 
 	if (notfirstExecute)

@@ -6,7 +6,9 @@
 #include "../HelperFunctions/GameObjectFactory.h"
 #include "AnimationComponent.h"
 #include "GameObject.h"
+#include "MaitaPlayerComponent.h"
 #include "PhysicsComponent.h"
+#include "Service/AudioLocator.h"
 #include "TransformComponent.h"
 
 BubbleStateComponent::BubbleStateComponent(dae::GameObject* owner, dae::Scene& scene)
@@ -75,9 +77,34 @@ void BubbleStateComponent::PushSideways(float direction)
 
 void BubbleStateComponent::TrapEnemy()
 {
+	TrapEnemy("Fruit0.png", 100);
+}
+
+void BubbleStateComponent::TrapEnemy(const std::string& fruitTexture, int scoreValue)
+{
 	if (dynamic_cast<BubbleTrappedState*>(m_pCurrentState.get()) != nullptr)
 		return;
 
+	m_FruitTexture = fruitTexture;
+	m_FruitScoreValue = scoreValue;
+	ChangeState(std::make_unique<BubbleTrappedState>(GetOwner()));
+
+	if (m_IsWarning)
+	{
+		if (auto* animation = GetOwner()->GetComponent<AnimationComponent>())
+		{
+			animation->PlayAnimation("TrappedRed");
+		}
+	}
+}
+
+void BubbleStateComponent::TrapMaitaPlayer(MaitaPlayerComponent* maitaPlayer)
+{
+	if (maitaPlayer == nullptr || dynamic_cast<BubbleTrappedState*>(m_pCurrentState.get()) != nullptr)
+		return;
+
+	m_TrappedMaitaPlayer = maitaPlayer;
+	m_TrappedMaitaPlayer->TrapInBubble();
 	ChangeState(std::make_unique<BubbleTrappedState>(GetOwner()));
 
 	if (m_IsWarning)
@@ -104,7 +131,16 @@ bool BubbleStateComponent::PopTrappedIntoFruit()
 		return false;
 
 	const auto& position = transform->GetWorldPosition();
-	SpawnFruit(*m_pScene, { position.x, position.y });
+	if (m_TrappedMaitaPlayer != nullptr)
+	{
+		m_TrappedMaitaPlayer->PopFromBubble({ position.x, position.y });
+		m_TrappedMaitaPlayer = nullptr;
+		GetOwner()->Destroy();
+		return true;
+	}
+
+	SpawnFruit(*m_pScene, { position.x, position.y }, m_FruitTexture, m_FruitScoreValue);
+	AudioLocator::GetAudio().PlaySound("Data/Sound/hurt.wav");
 	GetOwner()->Destroy();
 	return true;
 }
@@ -119,7 +155,15 @@ void BubbleStateComponent::Expire()
 		if (auto* transform = GetOwner()->GetComponent<dae::TransformComponent>())
 		{
 			const auto& position = transform->GetWorldPosition();
-			CreateEnemy(*m_pScene, { position.x, position.y });
+			if (m_TrappedMaitaPlayer != nullptr)
+			{
+				m_TrappedMaitaPlayer->ReleaseFromBubble({ position.x, position.y });
+				m_TrappedMaitaPlayer = nullptr;
+			}
+			else
+			{
+				CreateEnemy(*m_pScene, { position.x, position.y });
+			}
 		}
 	}
 

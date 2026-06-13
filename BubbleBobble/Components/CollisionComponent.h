@@ -10,7 +10,8 @@ enum class CollisionType
 	Platform,
 	Solid,
 	Bubble,
-	Fruit
+	Fruit,
+	MaitaBall
 };
 
 class CollisionComponent : public dae::Component

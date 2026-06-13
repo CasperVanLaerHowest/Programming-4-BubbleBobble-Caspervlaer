@@ -2,12 +2,23 @@
 #include "TransformComponent.h"
 #include "CollisionComponent.h"
 #include "BubbleStateComponent.h"
+#include "EnemyDropComponent.h"
+#include "MaitaBallComponent.h"
+#include "MaitaPlayerComponent.h"
 #include "PlayerStateComponent.h"
+#include "PlayerSlotComponent.h"
 #include "PoppedEnemyComponent.h"
 #include "ScoreComponent.h"
 #include "../HelperFunctions/CollisionRules.h"
+#include "Service/AudioLocator.h"
 #include "GameObject.h"
 #include <cmath>
+
+namespace
+{
+	constexpr float ScreenTop{ 0.f };
+	constexpr float ScreenBottom{ 576.f };
+}
 
 PhysicsComponent::PhysicsComponent(dae::GameObject* owner)
 	: Component(owner)
@@ -17,6 +28,9 @@ PhysicsComponent::PhysicsComponent(dae::GameObject* owner)
 void PhysicsComponent::Update(float deltaTime)
 {
 	if (GetOwner()->IsDestroyed())
+		return;
+
+	if (auto* maitaPlayer = GetOwner()->GetComponent<MaitaPlayerComponent>(); maitaPlayer && maitaPlayer->IsTrapped())
 		return;
 
 	auto transform = GetOwner()->GetComponent<dae::TransformComponent>();
@@ -36,9 +50,14 @@ void PhysicsComponent::Update(float deltaTime)
 		if (GetOwner()->IsDestroyed())
 			return;
 
-		transform->SetLocalPosition(pos.x + (m_Velocity.x * deltaTime),
-									pos.y + (m_Velocity.y * deltaTime),
-									pos.z);
+		glm::vec3 nextPosition{
+			pos.x + (m_Velocity.x * deltaTime),
+			pos.y + (m_Velocity.y * deltaTime),
+			pos.z
+		};
+		ApplyVerticalScreenWrap(nextPosition, collider);
+
+		transform->SetLocalPosition(nextPosition.x, nextPosition.y, nextPosition.z);
 	}
 }
 
@@ -133,6 +152,14 @@ void PhysicsComponent::CollisionCheck(float deltaTime,  glm::vec3 pos, Collision
 
 	if (stopX) m_Velocity.x = 0;
 	if (stopY) m_Velocity.y = 0;
+
+	if (stopX && collider != nullptr && collider->GetCollisionType() == CollisionType::MaitaBall)
+	{
+		if (auto* maitaBall = GetOwner()->GetComponent<MaitaBallComponent>())
+		{
+			maitaBall->Break();
+		}
+	}
 }
 
 void PhysicsComponent::HandleBubbleInteraction(
@@ -155,9 +182,43 @@ void PhysicsComponent::HandleBubbleInteraction(
 		if (bubble == nullptr || !bubble->CanTrapEnemy())
 			return;
 
-		bubble->TrapEnemy();
+		if (const auto* enemyDrop = enemyOwner->GetComponent<EnemyDropComponent>())
+		{
+			bubble->TrapEnemy(enemyDrop->GetFruitTexture(), enemyDrop->GetScoreValue());
+		}
+		else
+		{
+			bubble->TrapEnemy();
+		}
 
 		enemyOwner->Destroy();
+	}
+
+	const bool bubbleHitsMaitaPlayer =
+		collider->GetCollisionType() == CollisionType::Bubble &&
+		otherCollider->GetCollisionType() == CollisionType::Player &&
+		otherCollider->GetOwner()->GetComponent<MaitaPlayerComponent>() != nullptr;
+
+	const bool maitaPlayerHitsBubble =
+		collider->GetCollisionType() == CollisionType::Player &&
+		collider->GetOwner()->GetComponent<MaitaPlayerComponent>() != nullptr &&
+		otherCollider->GetCollisionType() == CollisionType::Bubble;
+
+	if (bubbleHitsMaitaPlayer || maitaPlayerHitsBubble)
+	{
+		auto* bubbleOwner = bubbleHitsMaitaPlayer ? collider->GetOwner() : otherCollider->GetOwner();
+		auto* maitaOwner = bubbleHitsMaitaPlayer ? otherCollider->GetOwner() : collider->GetOwner();
+		auto* bubble = bubbleOwner->GetComponent<BubbleStateComponent>();
+		if (bubble != nullptr && bubble->CanTrapEnemy() &&
+			(collider->CheckCollision(predictedPosX, otherCollider->GetOwner()) ||
+				collider->CheckCollision(predictedPosY, otherCollider->GetOwner())))
+		{
+			if (auto* maitaPlayer = maitaOwner->GetComponent<MaitaPlayerComponent>())
+			{
+				bubble->TrapMaitaPlayer(maitaPlayer);
+			}
+			return;
+		}
 	}
 
 	if (CollisionRules::ShouldDamagePlayer(collider, otherCollider, predictedPosX, predictedPosY))
@@ -165,9 +226,25 @@ void PhysicsComponent::HandleBubbleInteraction(
 		auto playerOwner = collider->GetCollisionType() == CollisionType::Player
 			? collider->GetOwner()
 			: otherCollider->GetOwner();
+		auto attackerOwner = collider->GetCollisionType() == CollisionType::Player
+			? otherCollider->GetOwner()
+			: collider->GetOwner();
+
+		if (const auto* maitaBall = attackerOwner->GetComponent<MaitaBallComponent>(); maitaBall && maitaBall->IsBreaking())
+			return;
+
+		if (const auto* maitaBall = attackerOwner->GetComponent<MaitaBallComponent>())
+		{
+			const auto* playerSlot = playerOwner->GetComponent<PlayerSlotComponent>();
+			if (playerSlot != nullptr && playerSlot->GetPlayerIndex() == maitaBall->GetOwnerPlayerIndex())
+				return;
+		}
 
 		if (auto* playerState = playerOwner->GetComponent<PlayerStateComponent>())
 			playerState->TakeHit();
+
+		if (auto* maitaBall = attackerOwner->GetComponent<MaitaBallComponent>())
+			maitaBall->Break();
 	}
 
 	if (CollisionRules::ShouldCollectFruit(collider, otherCollider, predictedPosX, predictedPosY))
@@ -179,13 +256,15 @@ void PhysicsComponent::HandleBubbleInteraction(
 			? collider->GetOwner()
 			: otherCollider->GetOwner();
 
-		const int scoreValue = fruitOwner->GetComponent<PoppedEnemyComponent>() != nullptr
-			? fruitOwner->GetComponent<PoppedEnemyComponent>()->GetScoreValue()
+		const auto* poppedEnemy = fruitOwner->GetComponent<PoppedEnemyComponent>();
+		const int scoreValue = poppedEnemy != nullptr
+			? poppedEnemy->GetScoreValue()
 			: 100;
 
 		if (auto* score = playerOwner->GetComponent<ScoreComponent>())
 			score->AddScore(scoreValue);
 
+		AudioLocator::GetAudio().PlaySound("Data/Sound/fruitPickup.wav");
 		fruitOwner->Destroy();
 		return;
 	}
@@ -216,4 +295,24 @@ void PhysicsComponent::HandleBubbleInteraction(
 
 	const float pushDirection = m_Velocity.x > 0.f ? 1.f : -1.f;
 	bubble->PushSideways(pushDirection);
+}
+
+void PhysicsComponent::ApplyVerticalScreenWrap(glm::vec3& position, const CollisionComponent* collider) const
+{
+	if (collider == nullptr)
+		return;
+
+	const auto offset = collider->GetOffset();
+	const auto size = collider->GetSize();
+	const float colliderTop = position.y + offset.y;
+	const float colliderBottom = colliderTop + size.y;
+
+	if (colliderTop > ScreenBottom)
+	{
+		position.y = ScreenTop - offset.y - size.y;
+	}
+	else if (colliderBottom < ScreenTop)
+	{
+		position.y = ScreenBottom - offset.y;
+	}
 }
