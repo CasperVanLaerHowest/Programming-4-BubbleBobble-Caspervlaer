@@ -20,9 +20,7 @@
 #include "../Components/TextComponent.h"
 #include "../Components/PoppedEnemyComponent.h"
 #include <TextureComponent.h>
-#include <array>
 #include <limits>
-#include <random>
 #include <vector>
 
 namespace
@@ -50,6 +48,19 @@ namespace
 
 		return closestPoint;
 	}
+
+	std::vector<std::shared_ptr<dae::Texture2D>> LoadTextures(const std::vector<std::string>& files)
+	{
+		std::vector<std::shared_ptr<dae::Texture2D>> textures{};
+		textures.reserve(files.size());
+
+		for (const auto& file : files)
+		{
+			textures.push_back(dae::ResourceManager::GetInstance().LoadTexture(file));
+		}
+
+		return textures;
+	}
 }
 
 
@@ -61,30 +72,10 @@ void CreatePlayer(dae::Scene& scene, const PlayerSettings& settings) {
 	player->AddComponent<CollisionComponent>(glm::vec2{ 20, 20 }, CollisionType::Player);
 	player->AddComponent<FacingComponent>();
 
-	std::vector<std::shared_ptr<dae::Texture2D>> idleFrames = {
-	dae::ResourceManager::GetInstance().LoadTexture("PlayerIdle0.png"),
-	dae::ResourceManager::GetInstance().LoadTexture("PlayerIdle1.png")
-	};
-
-	std::vector<std::shared_ptr<dae::Texture2D>> dieFrames = {
-	dae::ResourceManager::GetInstance().LoadTexture("PlayerDie0.png"),
-	dae::ResourceManager::GetInstance().LoadTexture("PlayerDie1.png"),
-	dae::ResourceManager::GetInstance().LoadTexture("PlayerDie2.png")
-	};
-
-	std::vector<std::shared_ptr<dae::Texture2D>> shootFrames = {
-	dae::ResourceManager::GetInstance().LoadTexture("PlayerShoot0.png"),
-	dae::ResourceManager::GetInstance().LoadTexture("PlayerShoot1.png"),
-	dae::ResourceManager::GetInstance().LoadTexture("PlayerShoot2.png"),
-	dae::ResourceManager::GetInstance().LoadTexture("PlayerShoot3.png")
-	};
-
-	std::vector<std::shared_ptr<dae::Texture2D>> walkFrames = {
-	dae::ResourceManager::GetInstance().LoadTexture("PlayerWalk0.png"),
-	dae::ResourceManager::GetInstance().LoadTexture("PlayerWalk2.png"),
-	dae::ResourceManager::GetInstance().LoadTexture("PlayerWalk1.png"),
-	dae::ResourceManager::GetInstance().LoadTexture("PlayerWalk3.png")
-	};
+	const auto idleFrames = LoadTextures(settings.idleFrames);
+	const auto dieFrames = LoadTextures(settings.dieFrames);
+	const auto shootFrames = LoadTextures(settings.shootFrames);
+	const auto walkFrames = LoadTextures(settings.walkFrames);
 
 	auto animationComp = player->AddComponent<AnimationComponent>();
 	animationComp->AddAnimation("Idle", idleFrames, 0.5f, true);
@@ -215,24 +206,16 @@ void SpawnBubble(dae::Scene& scene, const glm::vec2& spawnPos, bool facingRight)
 
 void SpawnFruit(dae::Scene& scene, const glm::vec2& spawnPos)
 {
-	static constexpr std::array fruitTextures{
-		"Fruit0.png",
-		"Fruit1.png",
-		"Fruit2.png",
-		"Fruit3.png",
-		"Fruit4.png"
-	};
+	SpawnFruit(scene, spawnPos, "Fruit0.png", 100);
+}
 
-	static std::random_device randomDevice{};
-	static std::mt19937 randomEngine{ randomDevice() };
-	static std::uniform_int_distribution<std::size_t> fruitIndexDistribution{ 0, fruitTextures.size() - 1 };
-
+void SpawnFruit(dae::Scene& scene, const glm::vec2& spawnPos, const std::string& texture, int scoreValue)
+{
 	auto fruit = std::make_unique<dae::GameObject>();
 	fruit->GetComponent<dae::TransformComponent>()->SetLocalPosition(spawnPos.x, spawnPos.y, 0.f);
 	fruit->GetComponent<dae::TransformComponent>()->SetScale(2.f, 2.f, 1.f);
-	const auto fruitTexture = fruitTextures[fruitIndexDistribution(randomEngine)];
 	fruit->AddComponent<dae::TextureComponent>()->SetTexture("EnemyMove0.png");
-	fruit->AddComponent<PoppedEnemyComponent>(GetClosestFruitSpawnPoint(spawnPos), fruitTexture);
+	fruit->AddComponent<PoppedEnemyComponent>(GetClosestFruitSpawnPoint(spawnPos), texture, scoreValue);
 
 	scene.Add(std::move(fruit));
 }

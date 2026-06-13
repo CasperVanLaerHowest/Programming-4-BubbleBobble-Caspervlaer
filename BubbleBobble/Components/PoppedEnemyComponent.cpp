@@ -12,10 +12,11 @@ namespace
 	constexpr float Pi{ 3.1415926535f };
 }
 
-PoppedEnemyComponent::PoppedEnemyComponent(dae::GameObject* owner, const glm::vec2& targetPosition, const std::string& fruitTexture)
+PoppedEnemyComponent::PoppedEnemyComponent(dae::GameObject* owner, const glm::vec2& targetPosition, const std::string& fruitTexture, int scoreValue)
 	: Component(owner)
 	, m_TargetPosition{ targetPosition }
 	, m_FruitTexture{ fruitTexture }
+	, m_ScoreValue{ scoreValue }
 {
 	if (auto* transform = GetOwner()->GetComponent<dae::TransformComponent>())
 	{

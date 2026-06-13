@@ -14,6 +14,8 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
   Commands/AddScoreCommand.h
   Commands/MoveCommand.cpp
   Commands/MoveCommand.h
+  Commands/StartGameCommand.cpp
+  Commands/StartGameCommand.h
   Components/ImGuiComponent.cpp 
   Components/ImGuiComponent.h
   Components/FacingComponent.cpp

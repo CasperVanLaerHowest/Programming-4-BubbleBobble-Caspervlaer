@@ -6,15 +6,17 @@
 class PoppedEnemyComponent final : public dae::Component
 {
 public:
-	PoppedEnemyComponent(dae::GameObject* owner, const glm::vec2& targetPosition, const std::string& fruitTexture);
+	PoppedEnemyComponent(dae::GameObject* owner, const glm::vec2& targetPosition, const std::string& fruitTexture, int scoreValue);
 	virtual ~PoppedEnemyComponent() = default;
 
 	void Update(float deltaTime) override;
+	int GetScoreValue() const { return m_ScoreValue; }
 
 private:
 	glm::vec2 m_StartPosition{};
 	glm::vec2 m_TargetPosition{};
 	std::string m_FruitTexture{};
+	int m_ScoreValue{};
 	float m_ElapsedTime{};
 	float m_Duration{ 5.f };
 	float m_ArcHeight{ 80.f };

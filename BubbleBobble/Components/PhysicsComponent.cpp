@@ -3,6 +3,7 @@
 #include "CollisionComponent.h"
 #include "BubbleStateComponent.h"
 #include "PlayerStateComponent.h"
+#include "PoppedEnemyComponent.h"
 #include "ScoreComponent.h"
 #include "../HelperFunctions/CollisionRules.h"
 #include "GameObject.h"
@@ -178,8 +179,12 @@ void PhysicsComponent::HandleBubbleInteraction(
 			? collider->GetOwner()
 			: otherCollider->GetOwner();
 
+		const int scoreValue = fruitOwner->GetComponent<PoppedEnemyComponent>() != nullptr
+			? fruitOwner->GetComponent<PoppedEnemyComponent>()->GetScoreValue()
+			: 100;
+
 		if (auto* score = playerOwner->GetComponent<ScoreComponent>())
-			score->AddScore(100);
+			score->AddScore(scoreValue);
 
 		fruitOwner->Destroy();
 		return;

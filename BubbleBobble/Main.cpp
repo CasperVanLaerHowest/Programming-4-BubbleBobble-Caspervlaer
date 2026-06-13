@@ -29,15 +29,83 @@
 #include "Commands/TakeDamageCommand.h"
 #include "Commands/AddScoreCommand.h"
 #include "Commands/JumpCommand.h"
+#include "Commands/StartGameCommand.h"
 
 #include "Observers/HealthObserver.h"
 #include "Observers/ScoreObserver.h"
 
 #include "HelperFunctions/GameObjectFactory.h"
 
+#include <cstdint>
 #include <filesystem>
+#include <fstream>
+#include <memory>
+#include <stdexcept>
+#include <string>
 #include <vector>
-namespace fs = std::filesystem;
+
+void StartGame(GameMode gameMode);
+bool g_GameStarted{};
+std::filesystem::path g_DataPath{};
+
+std::vector<std::string> LoadLevelLayout(int levelIndex)
+{
+	std::ifstream levelFile{ g_DataPath / "Levels.txt" };
+	if (!levelFile.is_open())
+	{
+		throw std::runtime_error{ "Could not open Data/Levels.txt" };
+	}
+
+	std::vector<std::vector<std::string>> levels{};
+	std::vector<std::string> currentLevel{};
+	std::string line{};
+
+	while (std::getline(levelFile, line))
+	{
+		if (!line.empty() && line.back() == '\r')
+		{
+			line.pop_back();
+		}
+
+		if (line.empty() || line[0] == ';')
+		{
+			continue;
+		}
+
+		if (line == "---")
+		{
+			if (!currentLevel.empty())
+			{
+				levels.push_back(currentLevel);
+				currentLevel.clear();
+			}
+			continue;
+		}
+
+		currentLevel.push_back(line);
+	}
+
+	if (!currentLevel.empty())
+	{
+		levels.push_back(currentLevel);
+	}
+
+	if (levelIndex < 0 || levelIndex >= static_cast<int>(levels.size()))
+	{
+		throw std::runtime_error{ "Requested level does not exist in Data/Levels.txt" };
+	}
+
+	return levels[static_cast<std::size_t>(levelIndex)];
+}
+
+void AddText(dae::Scene& scene, const std::string& text, const glm::vec2& position, uint8_t fontSize)
+{
+	auto go = std::make_unique<dae::GameObject>();
+	auto font = dae::ResourceManager::GetInstance().LoadFont("Lingua.otf", fontSize);
+	go->GetComponent<dae::TransformComponent>()->SetLocalPosition(position.x, position.y, 0.f);
+	go->AddComponent<dae::TextComponent>(text, font);
+	scene.Add(std::move(go));
+}
 
 void TileLoader(std::string& texture, glm::vec2& position, glm::vec2& scale, dae::Scene& scene, CollisionType type) {
 	auto go {std::make_unique<dae::GameObject>()};
@@ -52,40 +120,15 @@ void TileLoader(std::string& texture, glm::vec2& position, glm::vec2& scale, dae
 	scene.Add(std::move(go));
 }
 
-dae::Scene& LevelLoad() {
-	auto& scene {dae::SceneManager::GetInstance().CreateScene()};
+dae::Scene& LevelLoad(GameMode gameMode) {
+	auto& scene {dae::SceneManager::GetInstance().CreateScene("Level")};
 	ClearFruitSpawnPoints();
 
 	constexpr float tileSize {23.f};
 	constexpr int offsetX {200};
 	constexpr int offsetY {40};
 
-	const std::vector<std::string> level =
-	{
-		"#############################",
-		"#                           #",
-		"#                           #",
-		"#                           #",
-		"#                           #",
-		"#                           #",
-		"#                           #",
-		"#                           #",
-		"#                           #",
-		"#      F             F      #",
-		"#//   /////////////////   //#",
-		"#                           #",
-		"#                           #",
-		"#                           #",
-		"#//   /////////////////   //#",
-		"#                           #",
-		"#                           #",
-		"#                           #",
-		"#//   /////////////////   //#",
-		"#                           #",
-		"#                           #",
-		"#                           #",
-		"#############################"
-	};
+	const auto level = LoadLevelLayout(0);
 
 	for (int row = 0; row < static_cast<int>(level.size()); ++row)
 	{
@@ -113,11 +156,92 @@ dae::Scene& LevelLoad() {
 		}
 	}
 
+	if (gameMode != GameMode::Versus)
+	{
+		CreateEnemy(scene, { 500.f, 300.f });
+	}
+
+	PlayerSettings playerOne{};
+	playerOne.spawnPosition = { 400.f, 300.f };
+	playerOne.label = "1UP";
+	playerOne.healthPosition = { 20.f, 20.f };
+	playerOne.scorePosition = { 200.f, 20.f };
+	playerOne.labelPosition = { 200.f, 0.f };
+	playerOne.controls = {
+		SDL_SCANCODE_A,
+		SDL_SCANCODE_D,
+		SDL_SCANCODE_W,
+		SDL_SCANCODE_S,
+		SDL_SCANCODE_SPACE
+	};
+
+	CreatePlayer(scene, playerOne);
+
+	if (gameMode == GameMode::CoOp || gameMode == GameMode::Versus)
+	{
+		PlayerSettings playerTwo{};
+		playerTwo.spawnPosition = { 450.f, 300.f };
+		playerTwo.label = gameMode == GameMode::Versus ? "MAITA" : "2UP";
+		playerTwo.healthPosition = { 940.f, 20.f };
+		playerTwo.scorePosition = { 760.f, 20.f };
+		playerTwo.labelPosition = { 760.f, 0.f };
+		playerTwo.controls = {
+			SDL_SCANCODE_LEFT,
+			SDL_SCANCODE_RIGHT,
+			SDL_SCANCODE_UP,
+			SDL_SCANCODE_DOWN,
+			SDL_SCANCODE_RCTRL
+		};
+
+		if (gameMode == GameMode::Versus)
+		{
+			playerTwo.idleFrames = { "EnemyMove0.png", "EnemyMove1.png" };
+			playerTwo.dieFrames = { "EnemyAngry0.png", "EnemyAngry1.png", "EnemyAngry2.png", "EnemyAngry3.png" };
+			playerTwo.shootFrames = { "EnemyAngry0.png", "EnemyAngry1.png", "EnemyAngry2.png", "EnemyAngry3.png" };
+			playerTwo.walkFrames = { "EnemyMove0.png", "EnemyMove1.png", "EnemyMove2.png", "EnemyMove3.png" };
+		}
+
+		CreatePlayer(scene, playerTwo);
+	}
+
 	return scene;
+}
+
+dae::Scene& StartScreenLoad()
+{
+	auto& scene{ dae::SceneManager::GetInstance().CreateScene("Start") };
+
+	AddText(scene, "BUBBLE BOBBLE", { 260.f, 120.f }, 36);
+	AddText(scene, "1 SINGLE PLAYER", { 300.f, 240.f }, 24);
+	AddText(scene, "2 CO-OP", { 300.f, 280.f }, 24);
+	AddText(scene, "3 VERSUS", { 300.f, 320.f }, 24);
+	AddText(scene, "PUSH 1, 2 OR 3", { 300.f, 380.f }, 18);
+
+	dae::InputManager::GetInstance().BindCommand(SDL_SCANCODE_1, std::make_unique<StartGameCommand>(GameMode::SinglePlayer, StartGame));
+	dae::InputManager::GetInstance().BindCommand(SDL_SCANCODE_2, std::make_unique<StartGameCommand>(GameMode::CoOp, StartGame));
+	dae::InputManager::GetInstance().BindCommand(SDL_SCANCODE_3, std::make_unique<StartGameCommand>(GameMode::Versus, StartGame));
+
+	return scene;
+}
+
+void StartGame(GameMode gameMode)
+{
+	if (g_GameStarted)
+		return;
+
+	g_GameStarted = true;
+
+	LevelLoad(gameMode);
+	dae::SceneManager::GetInstance().SetActiveScene("Level");
 }
 
 static void load()
 {
+	StartScreenLoad();
+	dae::SceneManager::GetInstance().SetActiveScene("Start");
+	return;
+
+#if 0
 	/*
 	//auto& scene = dae::SceneManager::GetInstance().CreateScene();
 
@@ -271,7 +395,7 @@ static void load()
 	//scene.Add(std::move(scoreText));
 	*/
 
-	auto& scene = LevelLoad();
+	auto& scene = LevelLoad(GameMode::SinglePlayer);
 	
 	PlayerSettings playerOne{};
 	playerOne.spawnPosition = { 400.f, 300.f };
@@ -290,18 +414,20 @@ static void load()
 	CreateEnemy(scene, { 500.f, 300.f });
 
 	CreatePlayer(scene, playerOne);
+#endif
 }
 
 
 
 int main(int, char*[]) {
 #if __EMSCRIPTEN__
-	fs::path data_location = "";
+	std::filesystem::path data_location = "";
 #else
-	fs::path data_location = "./Data/";
-	if(!fs::exists(data_location))
+	std::filesystem::path data_location = "./Data/";
+	if(!std::filesystem::exists(data_location))
 		data_location = "../Data/";
 #endif
+	g_DataPath = data_location;
 	dae::Minigin engine(data_location);
 	engine.Run(load);
     return 0;

@@ -3,6 +3,7 @@
 #include <SDL3/SDL.h>
 #include <glm/ext/vector_float2.hpp>
 #include <string>
+#include <vector>
 
 struct PlayerControls
 {
@@ -23,6 +24,10 @@ struct PlayerSettings
 	glm::vec2 scorePosition{ 200.f, 20.f };
 	glm::vec2 labelPosition{ 200.f, 0.f };
 	PlayerControls controls{};
+	std::vector<std::string> idleFrames{ "PlayerIdle0.png", "PlayerIdle1.png" };
+	std::vector<std::string> dieFrames{ "PlayerDie0.png", "PlayerDie1.png", "PlayerDie2.png" };
+	std::vector<std::string> shootFrames{ "PlayerShoot0.png", "PlayerShoot1.png", "PlayerShoot2.png", "PlayerShoot3.png" };
+	std::vector<std::string> walkFrames{ "PlayerWalk0.png", "PlayerWalk2.png", "PlayerWalk1.png", "PlayerWalk3.png" };
 };
 
 void CreatePlayer(dae::Scene& scene, const PlayerSettings& settings);
@@ -32,6 +37,7 @@ void CreateEnemy(dae::Scene& scene, const glm::vec2& position);
 void SpawnBubble(dae::Scene& scene, const glm::vec2& position, bool facingRight);
 
 void SpawnFruit(dae::Scene& scene, const glm::vec2& position);
+void SpawnFruit(dae::Scene& scene, const glm::vec2& position, const std::string& texture, int scoreValue);
 
 void ClearFruitSpawnPoints();
 void AddFruitSpawnPoint(const glm::vec2& position);
